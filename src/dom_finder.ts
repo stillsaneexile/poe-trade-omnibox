@@ -1,207 +1,38 @@
 /**
  * Functions related to manipulating the DOM.
- *
- * In this extension, the concept of "which filters are applied" and "which
- * filters are selected in the trade UI" are separated, so that the filter
- * system can later be used independently of the UI (to directly send API
- * requests in another feature, for example).
- *
- * This file contains functions that directly handle manipulating the UI.
  */
+
+import {parsePoeStatData} from "./api_data_parser";
 
 /**
  * A spec containing information about a certain filter type.
  */
-
-interface FilterUISpec {
-  filterType: FilterType;
+export interface FilterSpec {
   // Human-readable name in UI.
-  filterNameUi: string;
+  readableName: string;
+  // The UI has a huge distinction in behavior between stat and non-stat
+  // behaviors.
+  isStatFilter: boolean;
+  // Delve, Fractured, Enchant, etc. This is required due to some hackery to
+  // pick the correct one from the dropdown list.
+  //
+  // To explain further, the UI shows something like: "DELVE Item is overvalued
+  // by vendors", but there's no string you can type in to trigger this, so we
+  // need this information to pick the right one in a hacky way later.
+  statSubcategory: string;
 }
 
 /**
- * Non-stat filter specs.
- *
- * These are hard-coded since there's no reliable source of information for them
- * (other than scraping the screen).
- */
-      const NON_STAT_FILTER_SPECS = [{
-        filterType: FilterType.WEAP_DAMAGE,
-      filterNameUi: "Damage",
-      },
-        {
-          filterType: FilterType.WEAP_CRIT_CHANCE,
-      filterNameUi: "Critical Chance",
-        },
-        {
-          filterType: FilterType.WEAP_PDPS,
-      filterNameUi: "Physical DPS",
-        },
-        {
-          filterType: FilterType.WEAP_APS,
-      filterNameUi: "Attacks per Second",
-        },
-        {
-          filterType: FilterType.WEAP_DPS,
-      filterNameUi: "Damage per Second",
-        },
-        {
-          filterType: FilterType.WEAP_EDPS,
-      filterNameUi: "Elemental DPS",
-        },
-        {
-          filterType: FilterType.ARMOUR_ARMOUR,
-      filterNameUi: "Armour",
-        },
-        {
-          filterType: FilterType.ARMOUR_ES,
-      filterNameUi: "Energy Shield",
-        },
-        {
-          filterType: FilterType.ARMOUR_BLOCK,
-      filterNameUi: "Block",
-        },
-        {
-          filterType: FilterType.ARMOUR_EVASION,
-      filterNameUi: "Evasion",
-        },
-        {
-          filterType: FilterType.ARMOUR_WARD,
-      filterNameUi: "Ward",
-        },
-        {
-          filterType: FilterType.ARMOUR_BASE_PERCENTILE,
-      filterNameUi: "Base Percentile",
-        },
-        {
-          filterType: FilterType.SOCKET_SOCKETS,
-      filterNameUi: "Sockets",
-        },
-        {
-          filterType: FilterType.SOCKET_LINKS,
-      filterNameUi: "Links",
-        },
-        {
-          filterType: FilterType.REQ_STRENGTH,
-      filterNameUi: "Strength",
-        },
-        {
-          filterType: FilterType.REQ_INT,
-      filterNameUi: "Intelligence",
-        },
-        {
-          filterType: FilterType.REQ_DEX,
-      filterNameUi: "Dexterity",
-        },
-        {
-          filterType: FilterType.REQ_LEVEL,
-      filterNameUi: "Level",
-        },
-        {
-          filterType: FilterType.REQ_CHAR_CLASS,
-      filterNameUi: "Character Class",
-        },
-        {
-          filterType: FilterType.MAP_TIER,
-      filterNameUi: "Map Tier",
-        },
-        {
-          filterType: FilterType.MAP_IIQ,
-      filterNameUi: "Map IIQ",
-        },
-        {
-          filterType: FilterType.MAP_IIR,
-      filterNameUi: "Map IIR",
-        },
-        {
-          filterType: FilterType.MAP_PACKSIZE,
-      filterNameUi: "Map Packsize",
-        },
-        {
-          filterType: FilterType.MAP_BLIGHTED,
-      filterNameUi: "Blighted Map",
-        },
-        {
-          filterType: FilterType.MAP_BLIGHT_RAVAGED,
-      filterNameUi: "Blight-Ravaged Map",
-        },
-        {
-          filterType: FilterType.MAP_AREA_LEVEL,
-      filterNameUi: "Area Level",
-        },
-        {
-          filterType: FilterType.MISC_QUALITY,
-      filterNameUi: "Quality",
-        },
-        {
-          filterType: FilterType.MISC_ITEM_LEVEL,
-      filterNameUi: "Item Level",
-        },
-        {
-          filterType: FilterType.MISC_GEM_LEVEL,
-      filterNameUi: "Gem Level",
-        },
-        {
-          filterType: FilterType.MISC_GEM_EXP,
-      filterNameUi: "Gem Experience %",
-        },
-        {
-          filterType: FilterType.MISC_FRACTURED,
-      filterNameUi: "Fractured Item",
-        },
-        {
-          filterType: FilterType.MISC_SYNTHESIZED,
-      filterNameUi: "Synthesised Item",
-        },
-        {
-          filterType: FilterType.MISC_SEARING_EXARCH,
-      filterNameUi: "Searching Exarch Item",
-        },
-        {
-          filterType: FilterType.MISC_EATER_OF_WORLDS,
-      filterNameUi: "Eater of Worlds Item",
-        },
-        {
-          filterType: FilterType.MISC_ALT_ART,
-      filterNameUi: "Alternate Art",
-        },
-        {
-          filterType: FilterType.MISC_IDENTIFIED,
-      filterNameUi: "Identified",
-        },
-        {
-          filterType: FilterType.MISC_CORRUPTED,
-      filterNameUi: "Corrupted",
-        },
-        {
-          filterType: FilterType.MISC_MIRRORED,
-      filterNameUi: "Mirrored",
-        },
-        {
-          filterType: FilterType.MISC_SPLIT,
-      filterNameUi: "Split",
-        },
-        {
-          filterType: FilterType.MISC_CRAFTED,
-      filterNameUi: "Crafted",
-        },
-        {
-          filterType: FilterType.MISC_VEILED,
-      filterNameUi: "Veiled",
-        },
-        {
-          filterType: FilterType.MISC_ENCHANTED,
-      filterNameUi: "Enchanted",
-        }]
-
-/**
  * DOM selectors used for scraping / finding parts of the page.
- * TODO: make readonly
+ *
+ * Rather than hard-coding selectors, this helps to makes the process agnostic.
  */
 const QuerySelectors : Readonly<Record<string, string>> = {
-  // User-readable title of the filter. Used to find the nearest input to a
-  // title as a way to get the corresponding input box.
-  FILTER_TITLE: ".filter-type",
+  // User-readable title of the filter with inputs next to it.
+  FILTER_TITLE_NON_STAT: ".filter-title:not(.filter-title-clickable)",
+  // A clickable filter title, such as "Type Filters", that can be hidden or
+  // shown. The section may need to be toggled open for the user to access a subinput.
+  FILTER_TITLE_CLICKABLE: ".filter-title.filter-title-clickable",
   STAT_FILTERS_PARENT: ".filter-select-mutate",
 };
 
@@ -214,17 +45,48 @@ const QuerySelectors : Readonly<Record<string, string>> = {
  *
  * Returns an array of DOM elements.
  */
-const focusClosestSiblingInput = (filterType: FilterType) => {
-  const allTitleNodes = document.querySelectorAll(".filter-type");
-  const matchingTitleNode = [...allTitleNodes].find((node) => {
-    const trimmedTitle = node.textContent;
-    return trimmedTitle === getFilterTitleInUI(filterType);
-  });
-  if (!matchingTitleNode) {
-    // TODO: Throw an error or fallback.
-    return;
+const focusClosestSiblingInput = (filterSpec: FilterSpec) => {
+  // 1. Non-static filters: Try to find any non-stat filter titles that match
+  //    it; if so, click the nearest input.
+  if (filterSpec.isStatFilter) {
+    const allTitleNodes = document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT);
+    const matchingTitleNode = [...allTitleNodes].find((node) => {
+      const trimmedTitle = node.textContent;
+      return trimmedTitle === filterSpec.readableName;
+    });
+    if (!matchingTitleNode) {
+      // TODO: Throw an error or fallback.
+      return;
+    }
+    const closestSiblingInput = matchingTitleNode.parentElement?.querySelector("input");
+    closestSiblingInput?.focus();
   }
-  const closestSiblingInput = matchingTitleNode.parentElement?.querySelector("input");
-  closestSiblingInput?.focus();
+
+  // 2. Stat-filters: more complicated. Add it to the screen.
+
+  // 3. Otherwise, it should be a bug -- user never should have reached this
+  //    point.
+
+};
+
+const loadUiSpecs = async () => {
+  const filterSpecs : FilterSpec[] = [];
+  // Load the non-stat filters by scraping the page.
+  const titleNodes = [...document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT)];
+  const nonStatFilterTitles : string[] = titleNodes.map((n) => n?.textContent?.trim() ||
+    null);
+  for (const t of nonStatFilterTitles) {
+    filterSpecs.push({
+      readableName: t,
+      isStatFilter: false,
+    });
+  }
+
+  // Load the stat filters, which are contained in a complicated JSON.
+  // TODO: do fetch
+  const statFilterSpecs = parsePoeStatData(statData);
+
+  filterSpecs.push.apply(filterSpecs, statFilterSpecs);
+  return filterSpecs;
 };
 
