@@ -10,12 +10,15 @@
  */
 
 /**
- * Retrieves the corresponding title in the UI for the given filter, used to
- * essentially scrape and find the correct text box.
- *
- * NOTE: This is brittle, subject to changes from GGG on the trade site, which
- * rarely happen.
+ * A spec containing information about a certain filter type.
  */
+
+interface FilterUISpec {
+  filterType: FilterType;
+  // Human-readable name in UI.
+  filterNameUi: string;
+}
+
 const getFilterTitleInUI = (filterType: FilterType) : string => { 
   switch (filterType) {
     case FilterType.WEAP_DAMAGE:
@@ -115,7 +118,7 @@ const QuerySelectors : Readonly<Record<string, string>> = {
   // User-readable title of the filter. Used to find the nearest input to a
   // title as a way to get the corresponding input box.
   FILTER_TITLE: ".filter-type",
-
+  STAT_FILTERS_PARENT: ".filter-select-mutate",
 };
 
 /**
