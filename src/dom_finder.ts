@@ -19,96 +19,180 @@ interface FilterUISpec {
   filterNameUi: string;
 }
 
-const getFilterTitleInUI = (filterType: FilterType) : string => { 
-  switch (filterType) {
-    case FilterType.WEAP_DAMAGE:
-      return "Damage";
-    case FilterType.WEAP_CRIT_CHANCE:
-      return "Critical Chance";
-    case FilterType.WEAP_PDPS:
-      return "Physical DPS";
-    case FilterType.WEAP_APS:
-      return "Attacks per Second";
-    case FilterType.WEAP_DPS:
-      return "Damage per Second";
-    case FilterType.WEAP_EDPS:
-      return "Elemental DPS";
-    case FilterType.ARMOUR_ARMOUR:
-      return "Armour";
-    case FilterType.ARMOUR_ES:
-      return "Energy Shield";
-    case FilterType.ARMOUR_BLOCK:
-      return "Block";
-    case FilterType.ARMOUR_EVASION:
-      return "Evasion";
-    case FilterType.ARMOUR_WARD:
-      return "Ward";
-    case FilterType.ARMOUR_BASE_PERCENTILE:
-      return "Base Percentile";
-    case FilterType.SOCKET_SOCKETS:
-      return "Sockets";
-    case FilterType.SOCKET_LINKS:
-      return "Links";
-    case FilterType.REQ_STRENGTH:
-      return "Strength";
-    case FilterType.REQ_INT:
-      return "Intelligence";
-    case FilterType.REQ_DEX:
-      return "Dexterity";
-    case FilterType.REQ_LEVEL:
-      return "Level";
-    case FilterType.REQ_CHAR_CLASS:
-      return "Character Class";
-    case FilterType.MAP_TIER:
-      return "Map Tier";
-    case FilterType.MAP_IIQ:
-      return "Map IIQ";
-    case FilterType.MAP_IIR:
-      return "Map IIR";
-    case FilterType.MAP_PACKSIZE:
-      return "Map Packsize";
-    case FilterType.MAP_BLIGHTED:
-      return "Blighted Map";
-    case FilterType.MAP_BLIGHT_RAVAGED:
-      return "Blight-Ravaged Map";
-    case FilterType.MAP_AREA_LEVEL:
-      return "Area Level";
-    case FilterType.MISC_QUALITY:
-      return "Quality";
-    case FilterType.MISC_ITEM_LEVEL:
-      return "Item Level";
-    case FilterType.MISC_GEM_LEVEL:
-      return "Gem Level";
-    case FilterType.MISC_GEM_EXP:
-      return "Gem Experience %";
-    case FilterType.MISC_FRACTURED:
-      return "Fractured Item";
-    case FilterType.MISC_SYNTHESIZED:
-      return "Synthesised Item";
-    case FilterType.MISC_SEARING_EXARCH:
-      return "Searching Exarch Item";
-    case FilterType.MISC_EATER_OF_WORLDS:
-      return "Eater of Worlds Item";
-    case FilterType.MISC_ALT_ART:
-      return "Alternate Art";
-    case FilterType.MISC_IDENTIFIED:
-      return "Identified";
-    case FilterType.MISC_CORRUPTED:
-      return "Corrupted";
-    case FilterType.MISC_MIRRORED:
-      return "Mirrored";
-    case FilterType.MISC_SPLIT:
-      return "Split";
-    case FilterType.MISC_CRAFTED:
-      return "Crafted";
-    case FilterType.MISC_VEILED:
-      return "Veiled";
-    case FilterType.MISC_ENCHANTED:
-      return "Enchanted";
-    default:
-      throw new Error("Filter type not found: " + filterType);
-  }
-}
+/**
+ * Non-stat filter specs.
+ *
+ * These are hard-coded since there's no reliable source of information for them
+ * (other than scraping the screen).
+ */
+      const NON_STAT_FILTER_SPECS = [{
+        filterType: FilterType.WEAP_DAMAGE,
+      filterNameUi: "Damage",
+      },
+        {
+          filterType: FilterType.WEAP_CRIT_CHANCE,
+      filterNameUi: "Critical Chance",
+        },
+        {
+          filterType: FilterType.WEAP_PDPS,
+      filterNameUi: "Physical DPS",
+        },
+        {
+          filterType: FilterType.WEAP_APS,
+      filterNameUi: "Attacks per Second",
+        },
+        {
+          filterType: FilterType.WEAP_DPS,
+      filterNameUi: "Damage per Second",
+        },
+        {
+          filterType: FilterType.WEAP_EDPS,
+      filterNameUi: "Elemental DPS",
+        },
+        {
+          filterType: FilterType.ARMOUR_ARMOUR,
+      filterNameUi: "Armour",
+        },
+        {
+          filterType: FilterType.ARMOUR_ES,
+      filterNameUi: "Energy Shield",
+        },
+        {
+          filterType: FilterType.ARMOUR_BLOCK,
+      filterNameUi: "Block",
+        },
+        {
+          filterType: FilterType.ARMOUR_EVASION,
+      filterNameUi: "Evasion",
+        },
+        {
+          filterType: FilterType.ARMOUR_WARD,
+      filterNameUi: "Ward",
+        },
+        {
+          filterType: FilterType.ARMOUR_BASE_PERCENTILE,
+      filterNameUi: "Base Percentile",
+        },
+        {
+          filterType: FilterType.SOCKET_SOCKETS,
+      filterNameUi: "Sockets",
+        },
+        {
+          filterType: FilterType.SOCKET_LINKS,
+      filterNameUi: "Links",
+        },
+        {
+          filterType: FilterType.REQ_STRENGTH,
+      filterNameUi: "Strength",
+        },
+        {
+          filterType: FilterType.REQ_INT,
+      filterNameUi: "Intelligence",
+        },
+        {
+          filterType: FilterType.REQ_DEX,
+      filterNameUi: "Dexterity",
+        },
+        {
+          filterType: FilterType.REQ_LEVEL,
+      filterNameUi: "Level",
+        },
+        {
+          filterType: FilterType.REQ_CHAR_CLASS,
+      filterNameUi: "Character Class",
+        },
+        {
+          filterType: FilterType.MAP_TIER,
+      filterNameUi: "Map Tier",
+        },
+        {
+          filterType: FilterType.MAP_IIQ,
+      filterNameUi: "Map IIQ",
+        },
+        {
+          filterType: FilterType.MAP_IIR,
+      filterNameUi: "Map IIR",
+        },
+        {
+          filterType: FilterType.MAP_PACKSIZE,
+      filterNameUi: "Map Packsize",
+        },
+        {
+          filterType: FilterType.MAP_BLIGHTED,
+      filterNameUi: "Blighted Map",
+        },
+        {
+          filterType: FilterType.MAP_BLIGHT_RAVAGED,
+      filterNameUi: "Blight-Ravaged Map",
+        },
+        {
+          filterType: FilterType.MAP_AREA_LEVEL,
+      filterNameUi: "Area Level",
+        },
+        {
+          filterType: FilterType.MISC_QUALITY,
+      filterNameUi: "Quality",
+        },
+        {
+          filterType: FilterType.MISC_ITEM_LEVEL,
+      filterNameUi: "Item Level",
+        },
+        {
+          filterType: FilterType.MISC_GEM_LEVEL,
+      filterNameUi: "Gem Level",
+        },
+        {
+          filterType: FilterType.MISC_GEM_EXP,
+      filterNameUi: "Gem Experience %",
+        },
+        {
+          filterType: FilterType.MISC_FRACTURED,
+      filterNameUi: "Fractured Item",
+        },
+        {
+          filterType: FilterType.MISC_SYNTHESIZED,
+      filterNameUi: "Synthesised Item",
+        },
+        {
+          filterType: FilterType.MISC_SEARING_EXARCH,
+      filterNameUi: "Searching Exarch Item",
+        },
+        {
+          filterType: FilterType.MISC_EATER_OF_WORLDS,
+      filterNameUi: "Eater of Worlds Item",
+        },
+        {
+          filterType: FilterType.MISC_ALT_ART,
+      filterNameUi: "Alternate Art",
+        },
+        {
+          filterType: FilterType.MISC_IDENTIFIED,
+      filterNameUi: "Identified",
+        },
+        {
+          filterType: FilterType.MISC_CORRUPTED,
+      filterNameUi: "Corrupted",
+        },
+        {
+          filterType: FilterType.MISC_MIRRORED,
+      filterNameUi: "Mirrored",
+        },
+        {
+          filterType: FilterType.MISC_SPLIT,
+      filterNameUi: "Split",
+        },
+        {
+          filterType: FilterType.MISC_CRAFTED,
+      filterNameUi: "Crafted",
+        },
+        {
+          filterType: FilterType.MISC_VEILED,
+      filterNameUi: "Veiled",
+        },
+        {
+          filterType: FilterType.MISC_ENCHANTED,
+      filterNameUi: "Enchanted",
+        }]
 
 /**
  * DOM selectors used for scraping / finding parts of the page.
