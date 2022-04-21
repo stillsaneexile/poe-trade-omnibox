@@ -5,24 +5,6 @@
 import {parsePoeStatData} from "./api_data_parser";
 
 /**
- * A spec containing information about a certain filter type.
- */
-export interface FilterSpec {
-  // Human-readable name in UI.
-  readableName: string;
-  // The UI has a huge distinction in behavior between stat and non-stat
-  // behaviors.
-  isStatFilter: boolean;
-  // Delve, Fractured, Enchant, etc. This is required due to some hackery to
-  // pick the correct one from the dropdown list.
-  //
-  // To explain further, the UI shows something like: "DELVE Item is overvalued
-  // by vendors", but there's no string you can type in to trigger this, so we
-  // need this information to pick the right one in a hacky way later.
-  statSubcategory: string;
-}
-
-/**
  * DOM selectors used for scraping / finding parts of the page.
  *
  * Rather than hard-coding selectors, this helps to makes the process agnostic.
@@ -45,7 +27,7 @@ const QuerySelectors : Readonly<Record<string, string>> = {
  *
  * Returns an array of DOM elements.
  */
-const focusClosestSiblingInput = (filterSpec: FilterSpec) => {
+export const focusClosestSiblingInput = (filterSpec: FilterSpec) => {
   // 1. Non-static filters: Try to find any non-stat filter titles that match
   //    it; if so, click the nearest input.
   if (filterSpec.isStatFilter) {
@@ -69,7 +51,10 @@ const focusClosestSiblingInput = (filterSpec: FilterSpec) => {
 
 };
 
-const loadUiSpecs = async () => {
+const STAT_MODS_API_ENDPOINT =
+  'https://www.pathofexile.com/api/trade/data/stats';
+
+export const loadUiSpecs = async () => {
   const filterSpecs : FilterSpec[] = [];
   // Load the non-stat filters by scraping the page.
   const titleNodes = [...document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT)];

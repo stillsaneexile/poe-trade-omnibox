@@ -1,3 +1,5 @@
+import {FilterSpec} from "./filter_spec";
+
 /**
  * Handles search functionality that takes a search query and applies some type
  * of search (could be fuzzy, exact, etc.).
@@ -24,7 +26,7 @@ abstract class FilterSpecSearcher {
  * Implements a fast approximate string match ("fuzzy search") by simply
  * checking if the letters of the query occur in the same order.
  */
-class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
+export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
   constructor(filterSpecs: FilterSpec[]) {
     super(filterSpecs);
   }
