@@ -1,13 +1,8 @@
 {
   "manifest_version": 3,
-
   "name": "Path of Exile Trade Hotkeys",
   "description": "Unofficial extension. Adds hotkeys to the official Path of Exile trade site. Press ? after installing for help.",
   "version": "0.0.3",
-  "options_ui": {
-    "page": "options.html"
-  },
-
   "action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html"
@@ -20,10 +15,6 @@
           "js": ["js/vendor.js", "js/content_script.js"]
       }
   ],
-
-  "background": {
-    "service_worker": "js/background.js"
-  },
 
   "permissions": [
     "storage"
