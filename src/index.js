@@ -8,7 +8,6 @@
  */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './frontend/App';
 
 const body = document.querySelector('body');

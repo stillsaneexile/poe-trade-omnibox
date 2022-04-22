@@ -1,3 +1,5 @@
+import {FilterSpec} from "./filter_spec";
+
 /**
  * Parse the POE endpoint data to create a list of specs for stats.
  *

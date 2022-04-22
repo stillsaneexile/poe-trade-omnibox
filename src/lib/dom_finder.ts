@@ -28,17 +28,18 @@ export const loadUiSpecs = async () => {
   const filterSpecs : FilterSpec[] = [];
   // Load the non-stat filters by scraping the page.
   const titleNodes = [...document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT)];
-  const nonStatFilterTitles : string[] = titleNodes.map((n) => n?.textContent?.trim() ||
-    null);
+  const nonStatFilterTitles : (string | null)[] = titleNodes.map((n) => n?.textContent?.trim() || null);
   for (const t of nonStatFilterTitles) {
-    filterSpecs.push({
-      readableName: t,
-      isStatFilter: false,
-    });
+    if (t) {
+      filterSpecs.push({
+        readableName: t,
+        isStatFilter: false,
+      });
+    }
   }
 
   // Load the stat filters, which are contained in a complicated JSON.
-  // TODO: do fetch
+  const statData = await fetch(STAT_MODS_API_ENDPOINT).then(response => response.json());
   const statFilterSpecs = parsePoeStatData(statData);
 
   filterSpecs.push.apply(filterSpecs, statFilterSpecs);
@@ -67,6 +68,7 @@ export class ItemTradePage {
       return closestSiblingInput || null;
     }
     // 2. Stat-filters: more complicated. Add it to the screen.
+    return null;
   };
 
   getMainSearchInput() : HTMLElement | null {
