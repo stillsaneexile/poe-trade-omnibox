@@ -1,4 +1,4 @@
-import {FilterSpec} from "./filter_spec";
+import { FilterSpec } from "./filter_spec";
 
 /**
  * Handles search functionality that takes a search query and applies some type
@@ -19,7 +19,7 @@ abstract class FilterSpecSearcher {
     this._filterSpecs = filterSpecs;
   }
 
-  abstract search(query: string) : FilterSpec[];
+  abstract search(query: string): FilterSpec[];
 }
 
 /**
@@ -35,16 +35,16 @@ export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
   // parameter of "previousResult" and "previousQuery". If the query us a
   // superstring of the previous query, then by most algorithms the next set of
   // results should be a strict subset of the previous set of results.
-  search(query: string) : FilterSpec[] {
+  search(query: string): FilterSpec[] {
     if (query.length < FilterSpecSearcher.MIN_QUERY_LENGTH) {
       return [];
     }
-    const results : FilterSpec[] = [];
+    const results: FilterSpec[] = [];
     for (const spec of this._filterSpecs) {
       if (this._doesMatchFuzzy(query, spec.readableName)) {
         results.push(spec);
       }
-      
+
       // End early, having reached max results length.
       if (results.length >= FilterSpecSearcher.MAX_RESULTS_LENGTH) {
         return results;
@@ -53,7 +53,7 @@ export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
     return results;
   }
 
-  private _doesMatchFuzzy(query: string, text: string) : boolean {
+  private _doesMatchFuzzy(query: string, text: string): boolean {
     // Query is longer than text, couldn't possibly match.
     if (query.length > text.length) {
       return false;

@@ -15,5 +15,3 @@ export interface FilterSpec {
   // need this information to pick the right one in a hacky way later.
   statSubcategory?: string;
 }
-
-

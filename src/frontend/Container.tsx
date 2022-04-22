@@ -1,6 +1,8 @@
 import React from "react";
-import {useHotkeys} from "react-hotkeys-hook";
-import {ItemTradePage} from "../lib/dom_finder";
+import { useHotkeys } from "react-hotkeys-hook";
+import { ItemTradePage } from "../lib/dom_finder";
+import HelpPage from "./HelpPage";
+import Omnibox from "./Omnibox";
 
 /**
  * Overall container for the site.
@@ -12,16 +14,17 @@ const Container = () => {
     return new ItemTradePage();
   }, []);
 
-  useHotkeys('/', () => {
+  useHotkeys("/", (e) => {
+    e.preventDefault();
     tradePage.focusMainSearchInput();
   });
 
   return (
     <>
-      {isHelpShown && <HelpPage/>}
-      {isOmniboxShown && <Omnibox/>}
-      </>
-  )
-}
+      {isHelpShown && <HelpPage />}
+      {isOmniboxShown && <Omnibox />}
+    </>
+  );
+};
 
 export default Container;
