@@ -1,14 +1,14 @@
 import React from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ItemTradePage } from "../lib/dom_finder";
-import {FilterSpec} from "../lib/filter_spec";
+import { FilterSpec } from "../lib/filter_spec";
 import HelpPage from "./HelpPage";
 import Omnibox from "./omnibox/Omnibox";
 
 const Keys = {
-  FSLASH: '/',
-  ESC: 'esc',
-  SEMICOLON: ';',
+  FSLASH: "/",
+  ESC: "esc",
+  SEMICOLON: ";",
 };
 
 /**
@@ -17,7 +17,7 @@ const Keys = {
 const Container = () => {
   const [isHelpShown, setIsHelpShown] = React.useState(false);
   const [isOmniboxShown, setIsOmniboxShown] = React.useState(false);
-   const [filterSpecs, setFilterSpecs] = React.useState<FilterSpec[]>([]);
+  const [filterSpecs, setFilterSpecs] = React.useState<FilterSpec[]>([]);
   const tradePage = React.useMemo(() => {
     const tradePage = new ItemTradePage();
     // This kicks off some initialization, such as fetching. Don't await on this
@@ -28,7 +28,7 @@ const Container = () => {
     });
     return tradePage;
   }, []);
-  // Used to focus 
+  // Used to focus
 
   // Register our hotkeys.
   useHotkeys(Keys.FSLASH, (e) => {
@@ -37,7 +37,7 @@ const Container = () => {
   });
 
   useHotkeys(Keys.SEMICOLON, (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setIsOmniboxShown(!isOmniboxShown);
   });
 

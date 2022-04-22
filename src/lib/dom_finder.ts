@@ -24,7 +24,6 @@ const QuerySelectors: Readonly<Record<string, string>> = {
 const STAT_MODS_API_ENDPOINT =
   "https://www.pathofexile.com/api/trade/data/stats";
 
-
 export class ItemTradePage {
   /**
    * Given a FilterSpec, returns the nearest HTML input element. This could be a
@@ -92,6 +91,5 @@ export class ItemTradePage {
 
     filterSpecs.push.apply(filterSpecs, statFilterSpecs);
     return filterSpecs;
-  };
-
+  }
 }

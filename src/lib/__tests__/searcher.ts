@@ -103,10 +103,12 @@ test("case-insensitive to query", () => {
 });
 
 test("case-insensitive to results", () => {
-  const searcher = new FuzzyFilterSpecSearcher([{
+  const searcher = new FuzzyFilterSpecSearcher([
+    {
       readableName: "HeLlo WorLd",
       isStatFilter: false,
-    }]);
+    },
+  ]);
   expect(getNames(searcher.search("hello"))).toEqual(
     expect.arrayContaining(["HeLlo WorLd"])
   );

@@ -46,7 +46,7 @@ abstract class FilterSpecSearcher {
    * For now, this is simple: it takes anything with explicit matches and puts
    * them first, then everything else is random after.
    */
-  private sortResults(results: FilterSpec[], query: string) : FilterSpec[] {
+  private sortResults(results: FilterSpec[], query: string): FilterSpec[] {
     const toSort = [...results];
     toSort.sort((a, b) => {
       if (a.readableName.toLowerCase().includes(query)) {
