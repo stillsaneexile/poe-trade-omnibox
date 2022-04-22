@@ -12,7 +12,9 @@
       {
           "run_at": "document_end",
           "matches": ["<all_urls>"],
-          "js": ["js/vendor.js", "js/content_script.js"]
+	  "js": [],
+	  "css": [],
+	  "media": []
       }
   ],
 
