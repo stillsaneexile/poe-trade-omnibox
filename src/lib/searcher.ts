@@ -74,6 +74,7 @@ export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
       }
     }
 
+    // TODO: Sort results
     return false;
   }
 }

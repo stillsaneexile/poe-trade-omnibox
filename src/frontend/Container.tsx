@@ -28,6 +28,7 @@ const Container = () => {
     });
     return tradePage;
   }, []);
+  // Used to focus 
 
   // Register our hotkeys.
   useHotkeys(Keys.FSLASH, (e) => {
@@ -48,7 +49,7 @@ const Container = () => {
   return (
     <>
       {isHelpShown && <HelpPage />}
-      {isOmniboxShown && <Omnibox filterSpecs={filterSpecs}/>}
+      {isOmniboxShown && <Omnibox filterSpecs={filterSpecs} />}
     </>
   );
 };
