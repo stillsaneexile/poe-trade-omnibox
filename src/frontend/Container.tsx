@@ -51,7 +51,8 @@ const Container = () => {
   return (
     <>
       {isHelpShown && <HelpPage />}
-      {isOmniboxShown && <Omnibox filterSpecs={filterSpecs} />}
+  {isOmniboxShown && <Omnibox filterSpecs={filterSpecs} closeBox={() =>
+    setIsOmniboxShown(false)} />}
     </>
   );
 };

@@ -5,7 +5,7 @@ import Space from "../Space";
 const ItemDiv = styled.div<{isSelected: boolean}>`
   // Again: color taken from computed color of trade site for similar highlights.
   background-color: ${props => props.isSelected ? 'rgb(70, 82, 96)' : 'inherit'};
-  padding: ${Space[4]} 0;
+  padding: ${Space[8]} 0;
 `;
 
 interface SearchResultItemProps {

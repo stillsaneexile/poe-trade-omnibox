@@ -8,8 +8,8 @@ import Space from "../Space";
 import SearchResultItem from "./SearchResultItem";
 
 const OmniboxDiv = styled.div`
-padding: ${Space[12]};
-border-radius: ${Space[4]};
+  padding: ${Space[12]} 0;
+  border-radius: ${Space[4]};
   width: 50%;
   max-width: 600px;
   min-height: 300px;
@@ -39,10 +39,7 @@ border-radius: ${Space[4]};
   width: 100%;
   margin: 0;
   min-height: 20px;
-  padding-bottom: 1px;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-top: 1px;
+  padding: ${Space[4]} ${Space[8]};
   line-height: 20px;
   margin-bottom: ${Space[8]};
   }
@@ -53,9 +50,10 @@ const SearchResultsDiv = styled.div`
 
 interface OmniboxProps {
   filterSpecs: FilterSpec[];
+  closeBox: () => void;
 }
 
-const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs }) => {
+const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs, closeBox }) => {
   // Filtered search results.
   const [searchResults, setSearchResults] = React.useState<FilterSpec[]>([]);
   // Currently selected search index (when using arrow keys).
@@ -67,7 +65,7 @@ const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs }) => {
       return;
     }
     setSelectedIndex((prev) => prev - 1);
-  }, HOTKEY_CONFIG)
+  }, HOTKEY_CONFIG, [selectedIndex, searchResults])
   useHotkeys('down', (e) => {
     e.preventDefault();
     if (selectedIndex === searchResults.length - 1) {
@@ -75,12 +73,13 @@ const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs }) => {
       return;
     }
     setSelectedIndex((prev) => prev + 1);
-  }, HOTKEY_CONFIG)
+  }, HOTKEY_CONFIG, [selectedIndex, searchResults]);
   useHotkeys('enter', (e) => {
     // TODO: Implement this.
     e.preventDefault();
     alert('You selected: ' + searchResults[selectedIndex].readableName);
-  }, HOTKEY_CONFIG);
+    closeBox();
+  }, HOTKEY_CONFIG, [searchResults, selectedIndex]);
 
   const searcher = React.useMemo(() => {
     return new FuzzyFilterSpecSearcher(filterSpecs);
@@ -94,7 +93,7 @@ const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs }) => {
   };
 
   return (
-    <OmniboxDiv>
+    <OmniboxDiv onBlur={closeBox}>
       <input onChange={handleChange} autoFocus/>
       <SearchResultsDiv>
         {searchResults.map((result, idx) => {
