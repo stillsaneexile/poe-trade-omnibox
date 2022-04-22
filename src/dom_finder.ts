@@ -3,6 +3,7 @@
  */
 
 import {parsePoeStatData} from "./api_data_parser";
+import {FilterSpec} from "./filter_spec";
 
 /**
  * DOM selectors used for scraping / finding parts of the page.
@@ -16,39 +17,8 @@ const QuerySelectors : Readonly<Record<string, string>> = {
   // shown. The section may need to be toggled open for the user to access a subinput.
   FILTER_TITLE_CLICKABLE: ".filter-title.filter-title-clickable",
   STAT_FILTERS_PARENT: ".filter-select-mutate",
-};
-
-/**
- * Using a given filter type and a hard-coded mapping of titles, find the first
- * closes input and trigger a click event (handling both inputs and selects).
- *
- * Obviously scraping isn't the most robust, but that's how Chrome extensions
- * work...
- *
- * Returns an array of DOM elements.
- */
-export const focusClosestSiblingInput = (filterSpec: FilterSpec) => {
-  // 1. Non-static filters: Try to find any non-stat filter titles that match
-  //    it; if so, click the nearest input.
-  if (filterSpec.isStatFilter) {
-    const allTitleNodes = document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT);
-    const matchingTitleNode = [...allTitleNodes].find((node) => {
-      const trimmedTitle = node.textContent;
-      return trimmedTitle === filterSpec.readableName;
-    });
-    if (!matchingTitleNode) {
-      // TODO: Throw an error or fallback.
-      return;
-    }
-    const closestSiblingInput = matchingTitleNode.parentElement?.querySelector("input");
-    closestSiblingInput?.focus();
-  }
-
-  // 2. Stat-filters: more complicated. Add it to the screen.
-
-  // 3. Otherwise, it should be a bug -- user never should have reached this
-  //    point.
-
+  // Main item search box.
+  MAIN_SEARCH: '.search-left input',
 };
 
 const STAT_MODS_API_ENDPOINT =
@@ -75,3 +45,31 @@ export const loadUiSpecs = async () => {
   return filterSpecs;
 };
 
+export class ItemTradePage {
+  /**
+   * Given a FilterSpec, returns the nearest HTML input element. This could be a
+   * min-max filter, a stat filter, etc.
+   */
+  getClosestSiblingInput(filterSpec: FilterSpec) : HTMLElement | null {
+    // 1. Non-static filters: Try to find any non-stat filter titles that match
+    //    it; if so, click the nearest input.
+    if (filterSpec.isStatFilter) {
+      const allTitleNodes = document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT);
+      const matchingTitleNode = [...allTitleNodes].find((node) => {
+        const trimmedTitle = node.textContent;
+        return trimmedTitle === filterSpec.readableName;
+      });
+      if (!matchingTitleNode) {
+        // TODO: Handle error
+        return null;
+      }
+      const closestSiblingInput = matchingTitleNode.parentElement?.querySelector("input");
+      return closestSiblingInput || null;
+    }
+    // 2. Stat-filters: more complicated. Add it to the screen.
+  };
+
+  getMainSearchInput() : HTMLElement | null {
+    return document.querySelector(QuerySelectors.MAIN_SEARCH);
+  }
+}
