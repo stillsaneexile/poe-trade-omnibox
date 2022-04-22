@@ -40,7 +40,7 @@ test("respects max result limit", () => {
   }
   const searcher = new FuzzyFilterSpecSearcher(filterSpecs);
   const results = searcher.search("abc");
-  expect(results).toHaveLength(10);
+  expect(results).toHaveLength(25);
 });
 
 test("returns nothing for total misses", () => {
@@ -86,5 +86,31 @@ test("respects patterns that skip on the text", () => {
   );
   expect(getNames(searcher.search("fbz"))).toEqual(
     expect.arrayContaining(["foo bar baz"])
+  );
+});
+
+test("case-insensitive to query", () => {
+  const searcher = new FuzzyFilterSpecSearcher(TEST_FILTER_SPECS);
+  expect(getNames(searcher.search("fB"))).toEqual(
+    expect.arrayContaining(["foo baz bar", "foo bar baz"])
+  );
+  expect(getNames(searcher.search("fBb"))).toEqual(
+    expect.arrayContaining(["foo baz bar"])
+  );
+  expect(getNames(searcher.search("FBZ"))).toEqual(
+    expect.arrayContaining(["foo bar baz"])
+  );
+});
+
+test("case-insensitive to results", () => {
+  const searcher = new FuzzyFilterSpecSearcher([{
+      readableName: "HeLlo WorLd",
+      isStatFilter: false,
+    }]);
+  expect(getNames(searcher.search("hello"))).toEqual(
+    expect.arrayContaining(["HeLlo WorLd"])
+  );
+  expect(getNames(searcher.search("lo wo"))).toEqual(
+    expect.arrayContaining(["HeLlo WorLd"])
   );
 });
