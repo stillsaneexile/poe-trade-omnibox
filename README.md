@@ -1,70 +1,17 @@
-# Chrome Extension TypeScript Starter
+# Path of Exile Trade Hotkey Omnibox
 
-![build](https://github.com/chibat/chrome-extension-typescript-starter/workflows/build/badge.svg)
+## Structure
+This README assumes some basic knowledge of the terminology around Chrome
+extensions.
 
-Chrome Extension, TypeScript and Visual Studio Code
+It uses a React app in the content script (built using
+[react-content-script](https://github.com/yosevu/react-content-script)). If you
+would like to better understand the structure of the app, then looking at the
+bare boilerplate for that repository would be helpful.
 
-## Prerequisites
+There is no popup or background at the time of writing.
 
-* [node + npm](https://nodejs.org/) (Current Version)
-
-## Option
-
-* [Visual Studio Code](https://code.visualstudio.com/)
-
-## Includes the following
-
-* TypeScript
-* Webpack
-* React
-* Jest
-* Example Code
-    * Chrome Storage
-    * Options Version 2
-    * content script
-    * count up badge number
-    * background
-
-## Project Structure
-
-* src/typescript: TypeScript source files
-* src/assets: static files
-* dist: Chrome Extension directory
-* dist/js: Generated JavaScript files
-
-## Setup
-
-```
-npm install
-```
-
-## Import as Visual Studio Code project
-
-...
-
-## Build
-
-```
-npm run build
-```
-
-## Build in watch mode
-
-### terminal
-
-```
-npm run watch
-```
-
-### Visual Studio Code
-
-Run watch mode.
-
-type `Ctrl + Shift + B`
-
-## Load extension to chrome
-
-Load `dist` directory
-
-## Test
-`npx jest` or `npm run test`
+## Sources
+This repository is build off combining two boilerplates:
+* [chrome-extension-typescript-starter](https://github.com/chibat/chrome-extension-typescript-starter)
+* [react-content-script](https://github.com/yosevu/react-content-script)
