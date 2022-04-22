@@ -3,7 +3,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { ItemTradePage } from "../lib/dom_finder";
 import {FilterSpec} from "../lib/filter_spec";
 import HelpPage from "./HelpPage";
-import Omnibox from "./Omnibox";
+import Omnibox from "./omnibox/Omnibox";
 
 const Keys = {
   FSLASH: '/',

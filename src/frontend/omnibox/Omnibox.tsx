@@ -1,11 +1,8 @@
 import React from "react";
-import {FilterSpec} from "../lib/filter_spec";
-import {FuzzyFilterSpecSearcher} from "../lib/searcher";
+import {FilterSpec} from "../../lib/filter_spec";
+import {FuzzyFilterSpecSearcher} from "../../lib/searcher";
+import SearchResultItem from "./SearchResultItem";
 
-
-const SearchResultItem : React.FC<SearchResultItemProps> = ({spec}) => {
-  return <>"search result!"</>;
-};
 
 interface OmniboxProps {
   filterSpecs: FilterSpec[];
@@ -18,14 +15,17 @@ const Omnibox : React.FC<OmniboxProps> = ({filterSpecs}) => {
   }, [filterSpecs]);
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
+    console.log('handling a change');
     const query = e.currentTarget.value;
-    setSearchResults(searcher.search(query));
+    const results = searcher.search(query);
+    console.log(results);
+    setSearchResults(results);
   };
 
   return <div>
     <input onChange={handleChange} type="text" autoFocus/>
     {searchResults.map((result) => {
-      <SearchResultItem/>
+      <SearchResultItem spec={result}/>
     })}
   </div>;
 };
