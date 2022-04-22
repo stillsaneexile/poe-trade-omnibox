@@ -50,10 +50,10 @@ abstract class FilterSpecSearcher {
     const toSort = [...results];
     toSort.sort((a, b) => {
       if (a.readableName.toLowerCase().includes(query)) {
-        return 1;
+        return -1;
       }
       if (b.readableName.toLowerCase().includes(query)) {
-        return -1;
+        return 1;
       }
       return 0;
     });

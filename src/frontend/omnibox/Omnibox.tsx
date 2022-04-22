@@ -1,14 +1,28 @@
 import styled from "@emotion/styled";
 import React from "react";
+import {useHotkeys} from "react-hotkeys-hook";
 import { FilterSpec } from "../../lib/filter_spec";
 import { FuzzyFilterSpecSearcher } from "../../lib/searcher";
+import HOTKEY_CONFIG from "../HotkeyConfig";
+import Space from "../Space";
 import SearchResultItem from "./SearchResultItem";
 
 const OmniboxDiv = styled.div`
-  width: 300;
-  height: 300;
-  background-color: white;
+padding: ${Space[12]};
+border-radius: ${Space[4]};
+  width: 50%;
+  max-width: 600px;
+  min-height: 300px;
+  height: 500px;
+  max-height: 80%;
+  opacity: 0.9;
   z-index: 1000;
+  overflow-y: scroll;
+
+  // Taken from trade page.
+  background-color: #1e2124;
+  color: rgb(226, 226, 226);
+  border: 1px solid #634928;
 
   position: fixed;
   top: 50%;
@@ -16,7 +30,22 @@ const OmniboxDiv = styled.div`
   transform: translate(-50%, -50%);
 
   // This may be somewhat brittle, as we're taking this straight from their CSS.
+  // I'd prefer this than copying the class names however: even if GGG changes
+  // their styles, at least we'll still be fashionable, albeit retro.
+  // This is literally copied from the "computed" section of inspector.
   font-family: "FontinSmallcaps",sans-serif;
+  input {
+  background-color: rgb(30, 33, 36);
+  width: 100%;
+  margin: 0;
+  min-height: 20px;
+  padding-bottom: 1px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 1px;
+  line-height: 20px;
+  margin-bottom: ${Space[8]};
+  }
 `;
 
 const SearchResultsDiv = styled.div`
@@ -27,7 +56,32 @@ interface OmniboxProps {
 }
 
 const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs }) => {
+  // Filtered search results.
   const [searchResults, setSearchResults] = React.useState<FilterSpec[]>([]);
+  // Currently selected search index (when using arrow keys).
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  useHotkeys('up', (e) => {
+    e.preventDefault();
+    if (selectedIndex === 0) {
+      // Do nothing. We're at the beginning.
+      return;
+    }
+    setSelectedIndex((prev) => prev - 1);
+  }, HOTKEY_CONFIG)
+  useHotkeys('down', (e) => {
+    e.preventDefault();
+    if (selectedIndex === searchResults.length - 1) {
+      // Do nothing. We're at the end.
+      return;
+    }
+    setSelectedIndex((prev) => prev + 1);
+  }, HOTKEY_CONFIG)
+  useHotkeys('enter', (e) => {
+    // TODO: Implement this.
+    e.preventDefault();
+    alert('You selected: ' + searchResults[selectedIndex].readableName);
+  }, HOTKEY_CONFIG);
+
   const searcher = React.useMemo(() => {
     return new FuzzyFilterSpecSearcher(filterSpecs);
   }, [filterSpecs]);
@@ -36,20 +90,17 @@ const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs }) => {
     const query = e.currentTarget.value;
     const results = searcher.search(query);
     setSearchResults(results);
+    setSelectedIndex(0);
   };
 
   return (
     <OmniboxDiv>
-      <div className="multiselect">
-        <div className="multiselect__tags">
-      <input onChange={handleChange} type="text" autoFocus
-        className="multiselect__input"/>
+      <input onChange={handleChange} autoFocus/>
       <SearchResultsDiv>
-        {searchResults.map((result) => {
-          <SearchResultItem spec={result} />;
+        {searchResults.map((result, idx) => {
+          return (<SearchResultItem spec={result} isSelected={idx == selectedIndex} />);
         })}
       </SearchResultsDiv>
-  </div></div>
     </OmniboxDiv>
   );
 };
