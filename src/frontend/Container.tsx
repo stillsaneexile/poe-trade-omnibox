@@ -72,13 +72,13 @@ const Container = () => {
   return (
     <>
       {isHelpShown && <HelpPage />}
-      {isOmniboxShown && (
+      {
         <Omnibox
           filterSpecs={filterSpecs}
           closeBox={() => setIsOmniboxShown(false)}
           tradePage={tradePage}
         />
-      )}
+      }
     </>
   );
 };

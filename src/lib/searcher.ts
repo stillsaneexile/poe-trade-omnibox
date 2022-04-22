@@ -3,6 +3,9 @@ import { FilterSpec } from "./filter_spec";
 /**
  * Handles search functionality that takes a search query and applies some type
  * of search (could be fuzzy, exact, etc.).
+ *
+ * TODO: This could be genericized beyond FilterSpec, if use case ever requires
+ * it.
  */
 abstract class FilterSpecSearcher {
   // Subclasses are responsible for enforcing these constants.
@@ -79,7 +82,10 @@ export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
     const results: FilterSpec[] = [];
     for (const spec of this._filterSpecs) {
       // Case-insensitive search.
-      if (this._doesMatchFuzzy(query, spec.readableName.toLowerCase())) {
+      const text = `${spec.statSubcategory || ""} ${
+        spec.readableName
+      }`.toLowerCase();
+      if (this._doesMatchFuzzy(query, text)) {
         results.push(spec);
       }
 

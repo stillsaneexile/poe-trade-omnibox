@@ -21,7 +21,7 @@ export const parsePoeStatData = (statData: any): FilterSpec[] => {
     const entries = labelGroup.entries;
     for (const entry of entries) {
       results.push({
-        readableName: `[${entry.type}] ${entry.text}`,
+        readableName: `${entry.text}`,
         isStatFilter: true,
         statSubcategory: entry.type,
       });

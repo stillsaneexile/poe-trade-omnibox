@@ -24,6 +24,7 @@ const OmniboxDiv = styled.div`
   background-color: #1e2124;
   color: rgb(226, 226, 226);
   border: 1px solid #634928;
+  font-size: 1.1em;
 
   position: fixed;
   top: 50%;
@@ -35,17 +36,31 @@ const OmniboxDiv = styled.div`
   // their styles, at least we'll still be fashionable, albeit retro.
   // This is literally copied from the "computed" section of inspector.
   font-family: "FontinSmallcaps", sans-serif;
-  input {
-  border: none;
-    background-color: rgb(30, 33, 36);
-    width: 100%;
-    min-height: 20px;
-    padding: ${Space[4]} ${Space[8]};
-    line-height: 20px;
-    margin-bottom: ${Space[8]};
-  }
 `;
 
+const InputContainerDiv = styled.div`
+// Too lazy to figure this shit out so just use a flexbox so the input sizes
+// correctly
+// https://stackoverflow.com/questions/35059569/html-input-element-not-taking-100-width
+display: flex;
+  input {
+  flex: 1;
+    border: none;
+    outline: none;
+    background-color: black;
+    width: 100%;
+    min-height: 20px;
+    padding: ${Space[8]};
+    line-height: 20px;
+    margin-bottom: ${Space[8]};
+    margin-left: ${Space[8]};
+    margin-right: ${Space[8]};
+
+    ::placeholder {
+      color: rgb(226, 226, 226);
+    }
+  }
+`;
 const SearchResultsDiv = styled.div``;
 
 interface OmniboxProps {
@@ -114,7 +129,9 @@ const Omnibox: React.FC<OmniboxProps> = ({
 
   return (
     <OmniboxDiv onBlur={closeBox}>
+      <InputContainerDiv>
       <input onChange={handleChange} autoFocus placeholder="Search Stats..." />
+</InputContainerDiv>
       <SearchResultsDiv>
         {searchResults.map((result, idx) => {
           return (
