@@ -24,33 +24,6 @@ const QuerySelectors: Readonly<Record<string, string>> = {
 const STAT_MODS_API_ENDPOINT =
   "https://www.pathofexile.com/api/trade/data/stats";
 
-export const loadUiSpecs = async () => {
-  const filterSpecs: FilterSpec[] = [];
-  // Load the non-stat filters by scraping the page.
-  const titleNodes = [
-    ...document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT),
-  ];
-  const nonStatFilterTitles: (string | null)[] = titleNodes.map(
-    (n) => n?.textContent?.trim() || null
-  );
-  for (const t of nonStatFilterTitles) {
-    if (t) {
-      filterSpecs.push({
-        readableName: t,
-        isStatFilter: false,
-      });
-    }
-  }
-
-  // Load the stat filters, which are contained in a complicated JSON.
-  const statData = await fetch(STAT_MODS_API_ENDPOINT).then((response) =>
-    response.json()
-  );
-  const statFilterSpecs = parsePoeStatData(statData);
-
-  filterSpecs.push.apply(filterSpecs, statFilterSpecs);
-  return filterSpecs;
-};
 
 export class ItemTradePage {
   /**
@@ -80,9 +53,45 @@ export class ItemTradePage {
     return null;
   }
 
+  /**
+   * Focus the main item search.
+   */
   focusMainSearchInput() {
     document
       .querySelector<HTMLInputElement>(QuerySelectors.MAIN_SEARCH)
       ?.focus();
   }
+
+  /**
+   * Essentially scrapes the page and the POE data endpoint to seed information
+   * for future search/autocomplete functionality.
+   */
+  async initializeFilterSpecs() {
+    const filterSpecs: FilterSpec[] = [];
+    // Load the non-stat filters by scraping the page.
+    const titleNodes = [
+      ...document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT),
+    ];
+    const nonStatFilterTitles: (string | null)[] = titleNodes.map(
+      (n) => n?.textContent?.trim() || null
+    );
+    for (const t of nonStatFilterTitles) {
+      if (t) {
+        filterSpecs.push({
+          readableName: t,
+          isStatFilter: false,
+        });
+      }
+    }
+
+    // Load the stat filters, which are contained in a complicated JSON.
+    const statData = await fetch(STAT_MODS_API_ENDPOINT).then((response) =>
+      response.json()
+    );
+    const statFilterSpecs = parsePoeStatData(statData);
+
+    filterSpecs.push.apply(filterSpecs, statFilterSpecs);
+    return filterSpecs;
+  };
+
 }
