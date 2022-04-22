@@ -1,7 +1,26 @@
+import styled from "@emotion/styled";
 import React from "react";
 import { FilterSpec } from "../../lib/filter_spec";
 import { FuzzyFilterSpecSearcher } from "../../lib/searcher";
 import SearchResultItem from "./SearchResultItem";
+
+const OmniboxDiv = styled.div`
+  width: 300;
+  height: 300;
+  background-color: white;
+  z-index: 1000;
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  // This may be somewhat brittle, as we're taking this straight from their CSS.
+  font-family: "FontinSmallcaps",sans-serif;
+`;
+
+const SearchResultsDiv = styled.div`
+`;
 
 interface OmniboxProps {
   filterSpecs: FilterSpec[];
@@ -20,12 +39,18 @@ const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs }) => {
   };
 
   return (
-    <div>
-      <input onChange={handleChange} type="text" autoFocus />
-      {searchResults.map((result) => {
-        <SearchResultItem spec={result} />;
-      })}
-    </div>
+    <OmniboxDiv>
+      <div className="multiselect">
+        <div className="multiselect__tags">
+      <input onChange={handleChange} type="text" autoFocus
+        className="multiselect__input"/>
+      <SearchResultsDiv>
+        {searchResults.map((result) => {
+          <SearchResultItem spec={result} />;
+        })}
+      </SearchResultsDiv>
+  </div></div>
+    </OmniboxDiv>
   );
 };
 

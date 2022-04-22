@@ -1,9 +1,11 @@
 import React from "react";
-import { useHotkeys } from "react-hotkeys-hook";
+import { Options, useHotkeys } from "react-hotkeys-hook";
 import { ItemTradePage } from "../lib/dom_finder";
 import { FilterSpec } from "../lib/filter_spec";
 import HelpPage from "./HelpPage";
 import Omnibox from "./omnibox/Omnibox";
+
+const HOTKEY_CONFIG : Options = { enableOnTags: ['INPUT'] };
 
 const Keys = {
   FSLASH: "/",
@@ -33,18 +35,19 @@ const Container = () => {
   // Register our hotkeys.
   useHotkeys(Keys.FSLASH, (e) => {
     e.preventDefault();
+    setIsOmniboxShown(false);
     tradePage.focusMainSearchInput();
-  });
+  }, HOTKEY_CONFIG);
 
   useHotkeys(Keys.SEMICOLON, (e) => {
     e.preventDefault();
     setIsOmniboxShown(!isOmniboxShown);
-  });
+  }, HOTKEY_CONFIG);
 
   useHotkeys(Keys.ESC, () => {
     setIsOmniboxShown(false);
     setIsHelpShown(false);
-  });
+  }, HOTKEY_CONFIG);
 
   return (
     <>
