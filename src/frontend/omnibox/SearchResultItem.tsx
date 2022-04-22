@@ -6,7 +6,7 @@ const ItemDiv = styled.div<{ isSelected: boolean }>`
   // Again: color taken from computed color of trade site for similar highlights.
   background-color: ${(props) =>
     props.isSelected ? "rgb(70, 82, 96)" : "inherit"};
-  padding: ${Space[8]} 0;
+  padding: ${Space[8]} ${Space[4]};
 `;
 
 interface SearchResultItemProps {
@@ -18,7 +18,9 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   spec,
   isSelected,
 }) => {
-  return <ItemDiv isSelected={isSelected}>{spec.readableName}</ItemDiv>;
+  return <ItemDiv isSelected={isSelected}>
+    {spec.readableName}
+  </ItemDiv>;
 };
 
 export default SearchResultItem;

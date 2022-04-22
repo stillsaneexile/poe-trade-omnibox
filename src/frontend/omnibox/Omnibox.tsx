@@ -36,9 +36,9 @@ const OmniboxDiv = styled.div`
   // This is literally copied from the "computed" section of inspector.
   font-family: "FontinSmallcaps", sans-serif;
   input {
+  border: none;
     background-color: rgb(30, 33, 36);
     width: 100%;
-    margin: 0;
     min-height: 20px;
     padding: ${Space[4]} ${Space[8]};
     line-height: 20px;
@@ -114,7 +114,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
 
   return (
     <OmniboxDiv onBlur={closeBox}>
-      <input onChange={handleChange} autoFocus />
+      <input onChange={handleChange} autoFocus placeholder="Search Stats..." />
       <SearchResultsDiv>
         {searchResults.map((result, idx) => {
           return (
