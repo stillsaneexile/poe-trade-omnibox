@@ -71,7 +71,7 @@ export class ItemTradePage {
     return null;
   };
 
-  getMainSearchInput() : HTMLElement | null {
-    return document.querySelector(QuerySelectors.MAIN_SEARCH);
+  focusMainSearchInput() {
+    document.querySelector<HTMLInputElement>(QuerySelectors.MAIN_SEARCH)?.focus();
   }
 }
