@@ -21,13 +21,14 @@ const Selectors: Readonly<Record<string, string>> = {
   // Main item search box.
   MAIN_SEARCH: ".search-left input",
   // Reset everything.
-  CLEAR_BUTTON: '.clear-btn',
+  CLEAR_BUTTON: ".clear-btn",
   // The "Add stat filter" button, but note that this is ambiguous if there are Stat Groups.
   // For some reason "brown" = stat section.
-  ADD_STAT_FILTER: '.search-advanced-pane.brown .filter-group-body input.multiselect__input',
+  ADD_STAT_FILTER:
+    ".search-advanced-pane.brown .filter-group-body input.multiselect__input",
   // A not-very-exact filter for the "min/max" fields. You'll need to use this
   // relative to some other object to accurately get the one you want.
-  STAT_FILTER_MINMAX: 'input.minmax',
+  STAT_FILTER_MINMAX: "input.minmax",
 };
 
 const STAT_MODS_API_ENDPOINT =
@@ -59,7 +60,6 @@ export class ItemTradePage {
     }
     // 2. Stat-filters: more complicated. Basically do a web-driver run and type
     // it in to the box, then select the correct one.
-    
 
     return null;
   }
@@ -68,9 +68,7 @@ export class ItemTradePage {
    * Focus the main item search.
    */
   focusMainSearchInput() {
-    document
-      .querySelector<HTMLInputElement>(Selectors.MAIN_SEARCH)
-      ?.focus();
+    document.querySelector<HTMLInputElement>(Selectors.MAIN_SEARCH)?.focus();
   }
 
   /**
@@ -111,30 +109,37 @@ export class ItemTradePage {
    */
   async addStatFilterSpec(spec: FilterSpec) {
     // Focus the add stat filter.
-    const filters = document.querySelectorAll<HTMLInputElement>(Selectors.ADD_STAT_FILTER);
+    const filters = document.querySelectorAll<HTMLInputElement>(
+      Selectors.ADD_STAT_FILTER
+    );
     const focusTarget = filters[0];
     if (focusTarget) {
       // Focusing is what brings up the menu to select a stat.
       focusTarget.focus();
     }
 
-    const filterParent = focusTarget.closest(".filter")
-    const selectOption = filterParent?.querySelectorAll<HTMLButtonElement>(".multiselect__option");
-    const parentFilterGroup =
-      focusTarget.closest(".filter-group-body")
+    const filterParent = focusTarget.closest(".filter");
+    const selectOption = filterParent?.querySelectorAll<HTMLButtonElement>(
+      ".multiselect__option"
+    );
+    const parentFilterGroup = focusTarget.closest(".filter-group-body");
     if (!parentFilterGroup) {
-      console.error('Missing parent filter group.');
+      console.error("Missing parent filter group.");
       return;
     }
-    const preClickFiltersLength = parentFilterGroup.querySelectorAll(".filter")!.length;
+    const preClickFiltersLength =
+      parentFilterGroup.querySelectorAll(".filter")!.length;
 
     // Simulate a click on the item.
     selectOption?.item(2).click();
 
     // This is a flaky part. Unfortunately if we want to chain actions like
     // this, like WebDriver, we need to fake-wait until an element appears.
-    await waitUntil(() => parentFilterGroup.querySelectorAll(".filter").length ===
-       preClickFiltersLength + 1);
+    await waitUntil(
+      () =>
+        parentFilterGroup.querySelectorAll(".filter").length ===
+        preClickFiltersLength + 1
+    );
 
     // Now focus the input boxes nearest to the clicked stat. Basically the way
     // this works is that a .filter-group-body has multiple .filter; the "add
@@ -145,20 +150,23 @@ export class ItemTradePage {
     // use a stale variable.
     const filtersPostClick = parentFilterGroup.querySelectorAll(".filter");
     const secondToLastFilter = filtersPostClick.item(
-      Math.max(filtersPostClick.length - 2, 0));
-    const nearestMinInput = secondToLastFilter?.querySelector<HTMLInputElement>(Selectors.STAT_FILTER_MINMAX);
+      Math.max(filtersPostClick.length - 2, 0)
+    );
+    const nearestMinInput = secondToLastFilter?.querySelector<HTMLInputElement>(
+      Selectors.STAT_FILTER_MINMAX
+    );
     if (!nearestMinInput) {
-      console.error('Missing min input');
+      console.error("Missing min input");
       return;
     }
     nearestMinInput.focus();
   }
 
-/**
- * Resets the search on the page.
-*/
+  /**
+   * Resets the search on the page.
+   */
   clearPage() {
     document.querySelector<HTMLButtonElement>(Selectors.CLEAR_BUTTON)!.click();
-    document.querySelector<HTMLInputElement>(Selectors.MAIN_SEARCH)!.value = '';
+    document.querySelector<HTMLInputElement>(Selectors.MAIN_SEARCH)!.value = "";
   }
 }

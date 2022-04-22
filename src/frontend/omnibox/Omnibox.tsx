@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
-import {useHotkeys} from "react-hotkeys-hook";
-import {ItemTradePage} from "../../lib/dom_finder";
+import { useHotkeys } from "react-hotkeys-hook";
+import { ItemTradePage } from "../../lib/dom_finder";
 import { FilterSpec } from "../../lib/filter_spec";
 import { FuzzyFilterSpecSearcher } from "../../lib/searcher";
 import HOTKEY_CONFIG from "../HotkeyConfig";
@@ -34,20 +34,19 @@ const OmniboxDiv = styled.div`
   // I'd prefer this than copying the class names however: even if GGG changes
   // their styles, at least we'll still be fashionable, albeit retro.
   // This is literally copied from the "computed" section of inspector.
-  font-family: "FontinSmallcaps",sans-serif;
+  font-family: "FontinSmallcaps", sans-serif;
   input {
-  background-color: rgb(30, 33, 36);
-  width: 100%;
-  margin: 0;
-  min-height: 20px;
-  padding: ${Space[4]} ${Space[8]};
-  line-height: 20px;
-  margin-bottom: ${Space[8]};
+    background-color: rgb(30, 33, 36);
+    width: 100%;
+    margin: 0;
+    min-height: 20px;
+    padding: ${Space[4]} ${Space[8]};
+    line-height: 20px;
+    margin-bottom: ${Space[8]};
   }
 `;
 
-const SearchResultsDiv = styled.div`
-`;
+const SearchResultsDiv = styled.div``;
 
 interface OmniboxProps {
   filterSpecs: FilterSpec[];
@@ -55,33 +54,52 @@ interface OmniboxProps {
   tradePage: ItemTradePage;
 }
 
-const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs, closeBox, tradePage }) => {
+const Omnibox: React.FC<OmniboxProps> = ({
+  filterSpecs,
+  closeBox,
+  tradePage,
+}) => {
   // Filtered search results.
   const [searchResults, setSearchResults] = React.useState<FilterSpec[]>([]);
   // Currently selected search index (when using arrow keys).
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-  useHotkeys('up', (e) => {
-    e.preventDefault();
-    if (selectedIndex === 0) {
-      // Do nothing. We're at the beginning.
-      return;
-    }
-    setSelectedIndex((prev) => prev - 1);
-  }, HOTKEY_CONFIG, [selectedIndex, searchResults])
-  useHotkeys('down', (e) => {
-    e.preventDefault();
-    if (selectedIndex === searchResults.length - 1) {
-      // Do nothing. We're at the end.
-      return;
-    }
-    setSelectedIndex((prev) => prev + 1);
-  }, HOTKEY_CONFIG, [selectedIndex, searchResults]);
-  useHotkeys('enter', (e) => {
-    // TODO: Implement this.
-    e.preventDefault();
-    tradePage.addStatFilterSpec(searchResults[selectedIndex]);
-    closeBox();
-  }, HOTKEY_CONFIG, [searchResults, selectedIndex]);
+  useHotkeys(
+    "up",
+    (e) => {
+      e.preventDefault();
+      if (selectedIndex === 0) {
+        // Do nothing. We're at the beginning.
+        return;
+      }
+      setSelectedIndex((prev) => prev - 1);
+    },
+    HOTKEY_CONFIG,
+    [selectedIndex, searchResults]
+  );
+  useHotkeys(
+    "down",
+    (e) => {
+      e.preventDefault();
+      if (selectedIndex === searchResults.length - 1) {
+        // Do nothing. We're at the end.
+        return;
+      }
+      setSelectedIndex((prev) => prev + 1);
+    },
+    HOTKEY_CONFIG,
+    [selectedIndex, searchResults]
+  );
+  useHotkeys(
+    "enter",
+    (e) => {
+      // TODO: Implement this.
+      e.preventDefault();
+      tradePage.addStatFilterSpec(searchResults[selectedIndex]);
+      closeBox();
+    },
+    HOTKEY_CONFIG,
+    [searchResults, selectedIndex]
+  );
 
   const searcher = React.useMemo(() => {
     return new FuzzyFilterSpecSearcher(filterSpecs);
@@ -96,10 +114,12 @@ const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs, closeBox, tradePage }) =
 
   return (
     <OmniboxDiv onBlur={closeBox}>
-      <input onChange={handleChange} autoFocus/>
+      <input onChange={handleChange} autoFocus />
       <SearchResultsDiv>
         {searchResults.map((result, idx) => {
-          return (<SearchResultItem spec={result} isSelected={idx == selectedIndex} />);
+          return (
+            <SearchResultItem spec={result} isSelected={idx == selectedIndex} />
+          );
         })}
       </SearchResultsDiv>
     </OmniboxDiv>

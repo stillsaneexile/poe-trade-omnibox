@@ -33,31 +33,52 @@ const Container = () => {
   // Used to focus
 
   // Register our hotkeys.
-  useHotkeys(Keys.FSLASH, (e) => {
-    e.preventDefault();
-    setIsOmniboxShown(false);
-    tradePage.focusMainSearchInput();
-  }, HOTKEY_CONFIG);
+  useHotkeys(
+    Keys.FSLASH,
+    (e) => {
+      e.preventDefault();
+      setIsOmniboxShown(false);
+      tradePage.focusMainSearchInput();
+    },
+    HOTKEY_CONFIG
+  );
 
-  useHotkeys(Keys.SEMICOLON, (e) => {
-    e.preventDefault();
-    setIsOmniboxShown(!isOmniboxShown);
-  }, HOTKEY_CONFIG);
+  useHotkeys(
+    Keys.SEMICOLON,
+    (e) => {
+      e.preventDefault();
+      setIsOmniboxShown(!isOmniboxShown);
+    },
+    HOTKEY_CONFIG
+  );
 
-  useHotkeys(Keys.ESC, () => {
-    setIsOmniboxShown(false);
-    setIsHelpShown(false);
-  }, HOTKEY_CONFIG);
+  useHotkeys(
+    Keys.ESC,
+    () => {
+      setIsOmniboxShown(false);
+      setIsHelpShown(false);
+    },
+    HOTKEY_CONFIG
+  );
 
-  useHotkeys(Keys.EQUALS, () => {
-    tradePage.clearPage();
-  }, HOTKEY_CONFIG);
+  useHotkeys(
+    Keys.EQUALS,
+    () => {
+      tradePage.clearPage();
+    },
+    HOTKEY_CONFIG
+  );
 
   return (
     <>
       {isHelpShown && <HelpPage />}
-  {isOmniboxShown && <Omnibox filterSpecs={filterSpecs} closeBox={() =>
-    setIsOmniboxShown(false)} tradePage={tradePage} />}
+      {isOmniboxShown && (
+        <Omnibox
+          filterSpecs={filterSpecs}
+          closeBox={() => setIsOmniboxShown(false)}
+          tradePage={tradePage}
+        />
+      )}
     </>
   );
 };
