@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import {useHotkeys} from "react-hotkeys-hook";
+import {ItemTradePage} from "../../lib/dom_finder";
 import { FilterSpec } from "../../lib/filter_spec";
 import { FuzzyFilterSpecSearcher } from "../../lib/searcher";
 import HOTKEY_CONFIG from "../HotkeyConfig";
@@ -51,9 +52,10 @@ const SearchResultsDiv = styled.div`
 interface OmniboxProps {
   filterSpecs: FilterSpec[];
   closeBox: () => void;
+  tradePage: ItemTradePage;
 }
 
-const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs, closeBox }) => {
+const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs, closeBox, tradePage }) => {
   // Filtered search results.
   const [searchResults, setSearchResults] = React.useState<FilterSpec[]>([]);
   // Currently selected search index (when using arrow keys).
@@ -77,7 +79,7 @@ const Omnibox: React.FC<OmniboxProps> = ({ filterSpecs, closeBox }) => {
   useHotkeys('enter', (e) => {
     // TODO: Implement this.
     e.preventDefault();
-    alert('You selected: ' + searchResults[selectedIndex].readableName);
+    tradePage.addStatFilterSpec(searchResults[selectedIndex]);
     closeBox();
   }, HOTKEY_CONFIG, [searchResults, selectedIndex]);
 

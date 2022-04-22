@@ -10,6 +10,7 @@ const Keys = {
   FSLASH: "/",
   ESC: "esc",
   SEMICOLON: ";",
+  EQUALS: "=",
 };
 
 /**
@@ -48,11 +49,15 @@ const Container = () => {
     setIsHelpShown(false);
   }, HOTKEY_CONFIG);
 
+  useHotkeys(Keys.EQUALS, () => {
+    tradePage.clearPage();
+  }, HOTKEY_CONFIG);
+
   return (
     <>
       {isHelpShown && <HelpPage />}
   {isOmniboxShown && <Omnibox filterSpecs={filterSpecs} closeBox={() =>
-    setIsOmniboxShown(false)} />}
+    setIsOmniboxShown(false)} tradePage={tradePage} />}
     </>
   );
 };

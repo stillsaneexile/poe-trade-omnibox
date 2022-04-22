@@ -4,13 +4,14 @@
 
 import { parsePoeStatData } from "./api_data_parser";
 import { FilterSpec } from "./filter_spec";
+import waitUntil from "./wait_until";
 
 /**
  * DOM selectors used for scraping / finding parts of the page.
  *
  * Rather than hard-coding selectors, this helps to makes the process agnostic.
  */
-const QuerySelectors: Readonly<Record<string, string>> = {
+const Selectors: Readonly<Record<string, string>> = {
   // User-readable title of the filter with inputs next to it.
   FILTER_TITLE_NON_STAT: ".filter-title:not(.filter-title-clickable)",
   // A clickable filter title, such as "Type Filters", that can be hidden or
@@ -19,6 +20,14 @@ const QuerySelectors: Readonly<Record<string, string>> = {
   STAT_FILTERS_PARENT: ".filter-select-mutate",
   // Main item search box.
   MAIN_SEARCH: ".search-left input",
+  // Reset everything.
+  CLEAR_BUTTON: '.clear-btn',
+  // The "Add stat filter" button, but note that this is ambiguous if there are Stat Groups.
+  // For some reason "brown" = stat section.
+  ADD_STAT_FILTER: '.search-advanced-pane.brown .filter-group-body input.multiselect__input',
+  // A not-very-exact filter for the "min/max" fields. You'll need to use this
+  // relative to some other object to accurately get the one you want.
+  STAT_FILTER_MINMAX: 'input.minmax',
 };
 
 const STAT_MODS_API_ENDPOINT =
@@ -34,7 +43,7 @@ export class ItemTradePage {
     //    it; if so, click the nearest input.
     if (filterSpec.isStatFilter) {
       const allTitleNodes = document.querySelectorAll(
-        QuerySelectors.FILTER_TITLE_NON_STAT
+        Selectors.FILTER_TITLE_NON_STAT
       );
       const matchingTitleNode = [...allTitleNodes].find((node) => {
         const trimmedTitle = node.textContent;
@@ -48,7 +57,10 @@ export class ItemTradePage {
         matchingTitleNode.parentElement?.querySelector("input");
       return closestSiblingInput || null;
     }
-    // 2. Stat-filters: more complicated. Add it to the screen.
+    // 2. Stat-filters: more complicated. Basically do a web-driver run and type
+    // it in to the box, then select the correct one.
+    
+
     return null;
   }
 
@@ -57,7 +69,7 @@ export class ItemTradePage {
    */
   focusMainSearchInput() {
     document
-      .querySelector<HTMLInputElement>(QuerySelectors.MAIN_SEARCH)
+      .querySelector<HTMLInputElement>(Selectors.MAIN_SEARCH)
       ?.focus();
   }
 
@@ -69,7 +81,7 @@ export class ItemTradePage {
     const filterSpecs: FilterSpec[] = [];
     // Load the non-stat filters by scraping the page.
     const titleNodes = [
-      ...document.querySelectorAll(QuerySelectors.FILTER_TITLE_NON_STAT),
+      ...document.querySelectorAll(Selectors.FILTER_TITLE_NON_STAT),
     ];
     const nonStatFilterTitles: (string | null)[] = titleNodes.map(
       (n) => n?.textContent?.trim() || null
@@ -91,5 +103,62 @@ export class ItemTradePage {
 
     filterSpecs.push.apply(filterSpecs, statFilterSpecs);
     return filterSpecs;
+  }
+
+  /**
+   * Basically a WebDriver script to click and find a filter given a filter
+   * spec.
+   */
+  async addStatFilterSpec(spec: FilterSpec) {
+    // Focus the add stat filter.
+    const filters = document.querySelectorAll<HTMLInputElement>(Selectors.ADD_STAT_FILTER);
+    const focusTarget = filters[0];
+    if (focusTarget) {
+      // Focusing is what brings up the menu to select a stat.
+      focusTarget.focus();
+    }
+
+    const filterParent = focusTarget.closest(".filter")
+    const selectOption = filterParent?.querySelectorAll<HTMLButtonElement>(".multiselect__option");
+    const parentFilterGroup =
+      focusTarget.closest(".filter-group-body")
+    if (!parentFilterGroup) {
+      console.error('Missing parent filter group.');
+      return;
+    }
+    const preClickFiltersLength = parentFilterGroup.querySelectorAll(".filter")!.length;
+
+    // Simulate a click on the item.
+    selectOption?.item(2).click();
+
+    // This is a flaky part. Unfortunately if we want to chain actions like
+    // this, like WebDriver, we need to fake-wait until an element appears.
+    await waitUntil(() => parentFilterGroup.querySelectorAll(".filter").length ===
+       preClickFiltersLength + 1);
+
+    // Now focus the input boxes nearest to the clicked stat. Basically the way
+    // this works is that a .filter-group-body has multiple .filter; the "add
+    // stat button" is also such a .filter. Therefore, the most recently added
+    // stat is going to be the second to last ".filter."
+    //
+    // It's really really important that you querySelectorAll again here: do not
+    // use a stale variable.
+    const filtersPostClick = parentFilterGroup.querySelectorAll(".filter");
+    const secondToLastFilter = filtersPostClick.item(
+      Math.max(filtersPostClick.length - 2, 0));
+    const nearestMinInput = secondToLastFilter?.querySelector<HTMLInputElement>(Selectors.STAT_FILTER_MINMAX);
+    if (!nearestMinInput) {
+      console.error('Missing min input');
+      return;
+    }
+    nearestMinInput.focus();
+  }
+
+/**
+ * Resets the search on the page.
+*/
+  clearPage() {
+    document.querySelector<HTMLButtonElement>(Selectors.CLEAR_BUTTON)!.click();
+    document.querySelector<HTMLInputElement>(Selectors.MAIN_SEARCH)!.value = '';
   }
 }
