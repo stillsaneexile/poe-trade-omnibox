@@ -7,6 +7,10 @@ const ItemDiv = styled.div<{ isSelected: boolean }>`
   background-color: ${(props) =>
     props.isSelected ? "rgb(70, 82, 96)" : "inherit"};
   padding: ${Space[8]} ${Space[4]};
+  cursor: pointer;
+  :hover {
+    background-color: rgb(70, 82, 96);
+  }
 `;
 
 // Most CSS taken from trade site.
@@ -25,14 +29,16 @@ const SubcategorySpan = styled.span`
 interface SearchResultItemProps {
   spec: FilterSpec;
   isSelected: boolean;
+  handleClick: (e: React.SyntheticEvent) => void;
 }
 
 const SearchResultItem: React.FC<SearchResultItemProps> = ({
   spec,
   isSelected,
+  handleClick,
 }) => {
   return (
-    <ItemDiv isSelected={isSelected}>
+    <ItemDiv isSelected={isSelected} onClick={handleClick}>
       {spec.statSubcategory && (
         <SubcategorySpan>{spec.statSubcategory}</SubcategorySpan>
       )}
