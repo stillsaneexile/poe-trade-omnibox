@@ -65,8 +65,12 @@ abstract class FilterSpecSearcher {
 }
 
 /**
- * Implements a fast approximate string match ("fuzzy search") by simply
- * checking if the letters of the query occur in the same order.
+ * Implements a fast approximate string match ("fuzzy search"). It splits both
+ * the text and query on spaces, then takes each of these tokens and check if
+ * they substring match in order.
+ *
+ * For example: The query "ax res" matches "maximum cold resistance".
+ * 
  * Case-insensitive.
  */
 export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
@@ -106,19 +110,21 @@ export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
     // Advance one letter in the text at a time, looking for it in the query. If
     // we reach the end of the query without "consuming" the whole query, then
     // return false.
+    const queryTokens = query.split(' ');
+    const textTokens = text.split(' ');
+
     let queryIndex = 0;
-    for (let textIndex = 0; textIndex < text.length; textIndex++) {
-      if (text[textIndex] === query[queryIndex]) {
+    for (let textIndex = 0; textIndex < textTokens.length; textIndex++) {
+      if (textTokens[textIndex].includes(queryTokens[queryIndex])) {
         queryIndex++;
       }
 
-      const consumedQuery = queryIndex === query.length;
+      const consumedQuery = queryIndex === queryTokens.length;
       if (consumedQuery) {
         return true;
       }
     }
 
-    // TODO: Sort results
     return false;
   }
 }

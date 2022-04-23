@@ -78,26 +78,26 @@ test("works for building up full substring from suffix", () => {
 
 test("respects patterns that skip on the text", () => {
   const searcher = new FuzzyFilterSpecSearcher(TEST_FILTER_SPECS);
-  expect(getNames(searcher.search("fb"))).toEqual(
+  expect(getNames(searcher.search("f b"))).toEqual(
     expect.arrayContaining(["foo baz bar", "foo bar baz"])
   );
-  expect(getNames(searcher.search("fbb"))).toEqual(
+  expect(getNames(searcher.search("f b b"))).toEqual(
     expect.arrayContaining(["foo baz bar"])
   );
-  expect(getNames(searcher.search("fbz"))).toEqual(
+  expect(getNames(searcher.search("f b z"))).toEqual(
     expect.arrayContaining(["foo bar baz"])
   );
 });
 
 test("case-insensitive to query", () => {
   const searcher = new FuzzyFilterSpecSearcher(TEST_FILTER_SPECS);
-  expect(getNames(searcher.search("fB"))).toEqual(
+  expect(getNames(searcher.search("f B"))).toEqual(
     expect.arrayContaining(["foo baz bar", "foo bar baz"])
   );
-  expect(getNames(searcher.search("fBb"))).toEqual(
+  expect(getNames(searcher.search("f B b"))).toEqual(
     expect.arrayContaining(["foo baz bar"])
   );
-  expect(getNames(searcher.search("FBZ"))).toEqual(
+  expect(getNames(searcher.search("F B Z"))).toEqual(
     expect.arrayContaining(["foo bar baz"])
   );
 });
