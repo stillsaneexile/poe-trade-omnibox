@@ -54,8 +54,10 @@ const Selectors = {
   FILTER_GROUP_TITLE: ".filter-group-header .filter-title",
 };
 
+// Starting with the forward slash here is how we retrieve the correct one,
+// regardless of language.
 const STAT_MODS_API_ENDPOINT =
-  "https://www.pathofexile.com/api/trade/data/stats";
+  "/api/trade/data/stats";
 
 export class ItemTradePage {
   /**
@@ -260,7 +262,7 @@ export class ItemTradePage {
 
     if (!selectedOption) {
       // Really shouldn't happen unless there's a bug in the matching above.
-      console.error("There was an error finding the option.");
+      console.error("There was an error finding the option: ", spec.readableName, spec.statSubcategory);
       return;
     }
 

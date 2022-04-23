@@ -15,15 +15,15 @@ export const parsePoeStatData = (statData: any): FilterSpec[] => {
   const results: FilterSpec[] = [];
   const groupedByLabel = statData.result;
   for (const labelGroup of groupedByLabel) {
-    // There is a `label` field, which at the time of writing is always the same
-    // as the `type` field of an entry, but capitalized. We just rely on the
-    // `type` field for now.
+    // There is a `type` field and a `label` field. Label is localized;
+    // therefore, we use it to properly match later on.
     const entries = labelGroup.entries;
     for (const entry of entries) {
       results.push({
         readableName: `${entry.text}`,
         isStatFilter: true,
-        statSubcategory: entry.type,
+        // pseudo only seems to have a type.
+        statSubcategory: labelGroup.label.toLowerCase(),
       });
     }
   }
