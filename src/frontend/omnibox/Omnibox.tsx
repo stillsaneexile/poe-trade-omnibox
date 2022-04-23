@@ -46,6 +46,8 @@ const Omnibox: React.FC<OmniboxProps> = ({
   closeBox,
   tradePage,
 }) => {
+  // TODO: Implement closing box on blur. 
+  // https://stackoverflow.com/questions/32553158/detect-click-outside-react-component
   // Filtered search results.
   const [searchResults, setSearchResults] = React.useState<FilterSpec[]>([]);
   // Currently selected search index (when using arrow keys).
@@ -80,6 +82,8 @@ const Omnibox: React.FC<OmniboxProps> = ({
   const handleResultSelect =
     (index: number) => (e: React.SyntheticEvent | KeyboardEvent) => {
       e.preventDefault();
+      // Prevent clicks from going underneath.
+      e.stopPropagation();
 
       // The whole filter section may be hidden. For example, after a search
       // result. Show if needed.
@@ -117,7 +121,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
   };
 
   return (
-    <PopupDiv onBlur={closeBox}>
+    <PopupDiv>
       <InputContainerDiv>
         <input
           onChange={handleChange}
