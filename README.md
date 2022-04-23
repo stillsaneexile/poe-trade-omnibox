@@ -10,6 +10,9 @@ This extension boils down to two keys:
     including those on the left side of the trade UI (corrupted, split, DPS,
     item category, etc.)
 
+For example: 
+* `;` + `frac strength` brings up fractured strength, fractured strength and dex, etc.
+
 Works in any language. Press `?` after installing to learn more.
 
 ## Installation

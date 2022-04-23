@@ -13,7 +13,7 @@ const Keys = {
   EQUALS: "=",
   LBRACKET: "[",
   // https://github.com/JohannesKlauss/react-hotkeys-hook/issues/421
-  QUESTION_MARK: "shift+/"
+  QUESTION_MARK: "shift+/",
 };
 
 /**
@@ -92,14 +92,14 @@ const Container = () => {
     Keys.QUESTION_MARK,
     (e) => {
       e.preventDefault();
-      setIsHelpShown((v) => !v)
+      setIsHelpShown((v) => !v);
     },
     HOTKEY_CONFIG
   );
 
   return (
     <>
-      {isHelpShown && <HelpPage />}
+      {isHelpShown && <HelpPage closeBox={() => setIsHelpShown(false)} />}
       {isOmniboxShown && (
         <Omnibox
           filterSpecs={filterSpecs}
