@@ -30,7 +30,8 @@ const Selectors: Readonly<Record<string, string>> = {
     ".search-advanced-pane.brown .filter-group-body input.multiselect__input",
   // A not-very-exact filter for the "min/max" fields. You'll need to use this
   // relative to some other object to accurately get the one you want.
-  STAT_FILTER_MINMAX: "input.minmax",
+  INPUT_MIN_MAX: "input.minmax",
+  STAT_FILTER_MINMAX: ".search-advanced-pane.brown .filter-group-body input.minmax",
   // Use with .closest() to find the same filter group.
   PARENT_FILTER_GROUP: ".filter-group",
   // Pretty complicated.
@@ -121,11 +122,48 @@ export class ItemTradePage {
     return filterSpecs;
   }
 
+  /**
+   * Shows the filter section, if needed. This is hidden after a search.
+   */
   maybeShowFilters() {
     if (document.querySelector(Selectors.ARE_FILTERS_HIDDEN)) {
       document.querySelector<HTMLButtonElement>(Selectors.TOGGLE_FILTERS_BUTTON)?.click();
     }
   }
+
+  /**
+   * Cycles focusing through "min" boxes on the stat filter. If one is already
+   * highlighted, it jumps to the previous.
+   */
+  focusLastMinStatFilter(eventTarget: EventTarget | null) {
+   // Unfortunately, there's no way to distinguish min/max box except
+   // placeholder (not locale agnostic). We use the fact that the classes come
+   // in pairs of twos; presumably the "min" box is the first of the pair.
+   let minMaxStatFilters = document.querySelectorAll<HTMLInputElement>(Selectors.STAT_FILTER_MINMAX);
+   if (minMaxStatFilters.length === 0) {
+     return;
+   }
+
+   // First check if any of the min OR max stat filters are selected. If they
+   // are, then we jump to the previous one. Otherwise, default to last.
+   var indexToFocus = minMaxStatFilters.length - 2;
+   for (let i = 0; i < minMaxStatFilters.length; ++i) {
+     // https://stackoverflow.com/questions/49693981/how-to-use-eventtarget-in-typescript
+     if (eventTarget && (eventTarget as HTMLElement).isSameNode(minMaxStatFilters[i])) {
+       // Find the previous min filter.
+       if (i % 2 === 0) {
+         indexToFocus = i - 2;
+       } else {
+         indexToFocus = i - 3;
+       }
+     }
+   }
+   // Implement wraparound logic.
+   if (indexToFocus < 0) {
+     indexToFocus = minMaxStatFilters.length + indexToFocus;
+   }
+   minMaxStatFilters[indexToFocus]?.focus();
+ }
 
   /**
    * Basically a WebDriver script to click and find a filter given a filter
@@ -231,7 +269,7 @@ export class ItemTradePage {
       Math.max(filtersPostClick.length - 2, 0)
     );
     const nearestMinInput = secondToLastFilter?.querySelector<HTMLInputElement>(
-      Selectors.STAT_FILTER_MINMAX
+      Selectors.INPUT_MIN_MAX
     );
     const nearestMultiselectInput =
       secondToLastFilter?.querySelector<HTMLInputElement>(Selectors.MULTISELECT_INPUT);

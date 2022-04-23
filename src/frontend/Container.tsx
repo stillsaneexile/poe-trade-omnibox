@@ -11,6 +11,7 @@ const Keys = {
   ESC: "esc",
   SEMICOLON: ";",
   EQUALS: "=",
+  LBRACKET: "[",
 };
 
 /**
@@ -75,6 +76,14 @@ const Container = () => {
     },
     HOTKEY_CONFIG
   );
+
+  useHotkeys(
+    Keys.LBRACKET,
+    (e) => {
+      tradePage.focusLastMinStatFilter(e.target);
+    },
+    HOTKEY_CONFIG,
+  )
 
   return (
     <>

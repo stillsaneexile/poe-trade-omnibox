@@ -76,10 +76,6 @@ abstract class FilterSpecSearcher {
  * Case-insensitive.
  */
 export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
-  constructor(filterSpecs: FilterSpec[]) {
-    super(filterSpecs);
-  }
-
   // TODO: If you have performance issues, you can have this accept an optional
   // parameter of "previousResult" and "previousQuery". If the query us a
   // superstring of the previous query, then by most algorithms the next set of
