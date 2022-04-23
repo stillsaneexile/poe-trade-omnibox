@@ -45,15 +45,17 @@ interface HelpPageProps {
 }
 
 const HelpPage: React.FC<HelpPageProps> = ({ closeBox }) => {
-  // TODO: Implement closing box on blur. 
+  // TODO: Implement closing box on blur.
   // https://stackoverflow.com/questions/32553158/detect-click-outside-react-component
   return (
     <PopupDiv>
       <HelpContainer>
         <h2>Path of Exile Trade Site Omnibox</h2>
-        <p>Search on the trade site without touching the mouse. Press <em>;</em> to
-        bring up the omnibox and start searching for filters to quickly jump to
-        them and add them to your search.</p>
+        <p>
+          Search on the trade site without touching the mouse. Press <em>;</em>{" "}
+          to bring up the omnibox and start searching for filters to quickly
+          jump to them and add them to your search.
+        </p>
         <h3>Hotkeys</h3>
         <table>
           <tbody>
@@ -76,7 +78,8 @@ const HelpPage: React.FC<HelpPageProps> = ({ closeBox }) => {
             <b>; + "links"</b>: jumps to the links filters
           </li>
           <li>
-            <b>; + "ax co res"</b>: finds m<b>ax</b>imum <b>co</b>ld <b>res</b>istance
+            <b>; + "ax co res"</b>: finds m<b>ax</b>imum <b>co</b>ld <b>res</b>
+            istance
           </li>
         </ul>
         <h3>Bugs and Feature Requests</h3>

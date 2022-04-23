@@ -13,7 +13,7 @@ import waitUntil from "./wait_until";
  *
  * Rather than hard-coding selectors, this helps to makes the process agnostic.
  */
-const Selectors: Readonly<Record<string, string>> = {
+const Selectors = {
   // User-readable title of the filter with inputs next to it.
   FILTER_TITLE_NON_STAT: ".filter-title:not(.filter-title-clickable)",
   // A clickable filter title, such as "Type Filters", that can be hidden or
@@ -51,6 +51,7 @@ const Selectors: Readonly<Record<string, string>> = {
   // The presence of this indicates that filters are hidden.
   ARE_FILTERS_HIDDEN: ".search-advanced-hidden",
   TOGGLE_FILTERS_BUTTON: ".toggle-search-btn",
+  FILTER_GROUP_TITLE: ".filter-group-header .filter-title",
 };
 
 const STAT_MODS_API_ENDPOINT =
@@ -69,7 +70,9 @@ export class ItemTradePage {
     );
     const matchingTitleNode = [...allTitleNodes].find((node) => {
       const trimmedTitle = node.textContent!.trim();
-      return trimmedTitle === filterSpec.readableName;
+      // Extract the part after the colon, because we append the filter group
+      // name before it.
+      return trimmedTitle === filterSpec.readableName.split(": ")[1];
     });
     if (!matchingTitleNode) {
       console.error("Couldn't find title: " + filterSpec.readableName);
@@ -102,16 +105,23 @@ export class ItemTradePage {
     const titleNodes = [
       ...document.querySelectorAll(Selectors.FILTER_TITLE_NON_STAT),
     ];
-    const nonStatFilterTitles: (string | null)[] = titleNodes.map(
-      (n) => n?.textContent?.trim() || null
-    );
-    for (const t of nonStatFilterTitles) {
-      if (t) {
-        filterSpecs.push({
-          readableName: t,
-          isStatFilter: false,
-        });
+    // Extract the section title and the filter titles. Append the filter group
+    // title, i.e., "Heist Filters: " for readability.
+    for (const node of titleNodes) {
+      const filterTitle = node?.textContent?.trim();
+      const parentGroup = node?.closest(Selectors.PARENT_FILTER_GROUP);
+      const sectionTitle =
+        parentGroup?.querySelector(Selectors.FILTER_GROUP_TITLE)?.textContent ||
+        "";
+
+      // Continue anyway in the case that there's a bug here.
+      if (sectionTitle.length === 0) {
+        console.error("Section title not found: " + node.textContent);
       }
+      filterSpecs.push({
+        readableName: `${sectionTitle}: ${filterTitle}`,
+        isStatFilter: false,
+      });
     }
 
     // Load the stat filters, which are contained in a complicated JSON.
@@ -152,7 +162,7 @@ export class ItemTradePage {
 
     // First check if any of the min OR max stat filters are selected. If they
     // are, then we jump to the previous one. Otherwise, default to last.
-    var indexToFocus = minMaxStatFilters.length - 2;
+    let indexToFocus = minMaxStatFilters.length - 2;
     for (let i = 0; i < minMaxStatFilters.length; ++i) {
       // https://stackoverflow.com/questions/49693981/how-to-use-eventtarget-in-typescript
       if (

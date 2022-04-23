@@ -48,11 +48,16 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   }, [isSelected]);
 
   return (
-    <ItemDiv isSelected={isSelected} onClick={handleClick}
-      onMouseEnter={handleHover} ref={itemRef}>
+    <ItemDiv
+      isSelected={isSelected}
+      onClick={handleClick}
+      onMouseEnter={handleHover}
+      ref={itemRef}
+    >
       {spec.statSubcategory && (
         <SubcategorySpan>{spec.statSubcategory}</SubcategorySpan>
       )}
+      {!spec.statSubcategory && <>&nbsp;&nbsp;</>}
       {spec.readableName}
     </ItemDiv>
   );

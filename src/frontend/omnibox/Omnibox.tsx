@@ -23,7 +23,7 @@ const InputContainerDiv = styled.div`
     min-height: 20px;
     padding: ${Space[8]};
     line-height: 20px;
-    margin-bottom: ${Space[8]};
+    margin-bottom: ${Space[12]};
     margin-left: ${Space[8]};
     margin-right: ${Space[8]};
 
@@ -46,7 +46,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
   closeBox,
   tradePage,
 }) => {
-  // TODO: Implement closing box on blur. 
+  // TODO: Implement closing box on blur.
   // https://stackoverflow.com/questions/32553158/detect-click-outside-react-component
   // Filtered search results.
   const [searchResults, setSearchResults] = React.useState<FilterSpec[]>([]);
