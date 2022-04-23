@@ -72,7 +72,7 @@ abstract class FilterSpecSearcher {
  * they substring match in order.
  *
  * For example: The query "ax res" matches "maximum cold resistance".
- * 
+ *
  * Case-insensitive.
  */
 export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
@@ -108,8 +108,8 @@ export class FuzzyFilterSpecSearcher extends FilterSpecSearcher {
     // Advance one letter in the text at a time, looking for it in the query. If
     // we reach the end of the query without "consuming" the whole query, then
     // return false.
-    const queryTokens = query.split(' ');
-    const textTokens = text.split(' ');
+    const queryTokens = query.split(" ");
+    const textTokens = text.split(" ");
 
     let queryIndex = 0;
     for (let textIndex = 0; textIndex < textTokens.length; textIndex++) {

@@ -52,13 +52,14 @@ const Container = () => {
         setAreSpecsInitialized(true);
         tradePage.initializeFilterSpecs().then((specs) => {
           setFilterSpecs(specs);
-          setIsOmniboxShown(v => !v);
+          setIsOmniboxShown((v) => !v);
         });
       } else {
-        setIsOmniboxShown(v => !v);
+        setIsOmniboxShown((v) => !v);
       }
     },
-    HOTKEY_CONFIG, [areSpecsInitialized]
+    HOTKEY_CONFIG,
+    [areSpecsInitialized]
   );
 
   useHotkeys(
@@ -83,22 +84,25 @@ const Container = () => {
     (e) => {
       tradePage.focusLastMinStatFilter(e.target);
     },
-    HOTKEY_CONFIG,
-  )
+    HOTKEY_CONFIG
+  );
 
   useHotkeys(
     Keys.QUESTION_MARK,
-    () => setIsHelpShown(v => !v), HOTKEY_CONFIG);
+    () => setIsHelpShown((v) => !v),
+    HOTKEY_CONFIG
+  );
 
   return (
     <>
       {isHelpShown && <HelpPage />}
-  {isOmniboxShown && (        <Omnibox
-    filterSpecs={filterSpecs}
-    closeBox={() => setIsOmniboxShown(false)}
-    tradePage={tradePage}
-  />
-  )}
+      {isOmniboxShown && (
+        <Omnibox
+          filterSpecs={filterSpecs}
+          closeBox={() => setIsOmniboxShown(false)}
+          tradePage={tradePage}
+        />
+      )}
     </>
   );
 };

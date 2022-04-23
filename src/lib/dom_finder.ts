@@ -31,14 +31,16 @@ const Selectors: Readonly<Record<string, string>> = {
   // A not-very-exact filter for the "min/max" fields. You'll need to use this
   // relative to some other object to accurately get the one you want.
   INPUT_MIN_MAX: "input.minmax",
-  STAT_FILTER_MINMAX: ".search-advanced-pane.brown .filter-group-body input.minmax",
+  STAT_FILTER_MINMAX:
+    ".search-advanced-pane.brown .filter-group-body input.minmax",
   // Use with .closest() to find the same filter group.
   PARENT_FILTER_GROUP: ".filter-group",
   // Pretty complicated.
   // .multiselect__element prevents selecting "No results found."
   // The :not clause prevents selecting the headers that appear ("Pseudo",
   // "Fractured").
-  STAT_FILTER_DROPDOWN_ELEMENTS: ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)",
+  STAT_FILTER_DROPDOWN_ELEMENTS:
+    ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)",
   // The presence of such a class would indicate that some stat filter is open.
   STAT_FILTER_ACTIVE: ".multiselect--active",
   // Can be used to count the number of filters added.
@@ -62,19 +64,19 @@ export class ItemTradePage {
    */
   async focusClosestSiblingInput(filterSpec: FilterSpec) {
     invariant(!filterSpec.isStatFilter);
-      const allTitleNodes = document.querySelectorAll(
-        Selectors.FILTER_TITLE_NON_STAT
-      );
-      const matchingTitleNode = [...allTitleNodes].find((node) => {
-        const trimmedTitle = node.textContent!.trim();
-        return trimmedTitle === filterSpec.readableName;
-      });
-      if (!matchingTitleNode) {
-        console.error("Couldn't find title: " + filterSpec.readableName);
-        return;
-      }
-      const closestSiblingInput =
-        matchingTitleNode.parentElement?.querySelector("input");
+    const allTitleNodes = document.querySelectorAll(
+      Selectors.FILTER_TITLE_NON_STAT
+    );
+    const matchingTitleNode = [...allTitleNodes].find((node) => {
+      const trimmedTitle = node.textContent!.trim();
+      return trimmedTitle === filterSpec.readableName;
+    });
+    if (!matchingTitleNode) {
+      console.error("Couldn't find title: " + filterSpec.readableName);
+      return;
+    }
+    const closestSiblingInput =
+      matchingTitleNode.parentElement?.querySelector("input");
     if (!closestSiblingInput) {
       console.error("Couldn't find sibling input for non-stat spec.");
       return;
@@ -127,7 +129,9 @@ export class ItemTradePage {
    */
   maybeShowFilters() {
     if (document.querySelector(Selectors.ARE_FILTERS_HIDDEN)) {
-      document.querySelector<HTMLButtonElement>(Selectors.TOGGLE_FILTERS_BUTTON)?.click();
+      document
+        .querySelector<HTMLButtonElement>(Selectors.TOGGLE_FILTERS_BUTTON)
+        ?.click();
     }
   }
 
@@ -136,34 +140,39 @@ export class ItemTradePage {
    * highlighted, it jumps to the previous.
    */
   focusLastMinStatFilter(eventTarget: EventTarget | null) {
-   // Unfortunately, there's no way to distinguish min/max box except
-   // placeholder (not locale agnostic). We use the fact that the classes come
-   // in pairs of twos; presumably the "min" box is the first of the pair.
-   let minMaxStatFilters = document.querySelectorAll<HTMLInputElement>(Selectors.STAT_FILTER_MINMAX);
-   if (minMaxStatFilters.length === 0) {
-     return;
-   }
+    // Unfortunately, there's no way to distinguish min/max box except
+    // placeholder (not locale agnostic). We use the fact that the classes come
+    // in pairs of twos; presumably the "min" box is the first of the pair.
+    let minMaxStatFilters = document.querySelectorAll<HTMLInputElement>(
+      Selectors.STAT_FILTER_MINMAX
+    );
+    if (minMaxStatFilters.length === 0) {
+      return;
+    }
 
-   // First check if any of the min OR max stat filters are selected. If they
-   // are, then we jump to the previous one. Otherwise, default to last.
-   var indexToFocus = minMaxStatFilters.length - 2;
-   for (let i = 0; i < minMaxStatFilters.length; ++i) {
-     // https://stackoverflow.com/questions/49693981/how-to-use-eventtarget-in-typescript
-     if (eventTarget && (eventTarget as HTMLElement).isSameNode(minMaxStatFilters[i])) {
-       // Find the previous min filter.
-       if (i % 2 === 0) {
-         indexToFocus = i - 2;
-       } else {
-         indexToFocus = i - 3;
-       }
-     }
-   }
-   // Implement wraparound logic.
-   if (indexToFocus < 0) {
-     indexToFocus = minMaxStatFilters.length + indexToFocus;
-   }
-   minMaxStatFilters[indexToFocus]?.focus();
- }
+    // First check if any of the min OR max stat filters are selected. If they
+    // are, then we jump to the previous one. Otherwise, default to last.
+    var indexToFocus = minMaxStatFilters.length - 2;
+    for (let i = 0; i < minMaxStatFilters.length; ++i) {
+      // https://stackoverflow.com/questions/49693981/how-to-use-eventtarget-in-typescript
+      if (
+        eventTarget &&
+        (eventTarget as HTMLElement).isSameNode(minMaxStatFilters[i])
+      ) {
+        // Find the previous min filter.
+        if (i % 2 === 0) {
+          indexToFocus = i - 2;
+        } else {
+          indexToFocus = i - 3;
+        }
+      }
+    }
+    // Implement wraparound logic.
+    if (indexToFocus < 0) {
+      indexToFocus = minMaxStatFilters.length + indexToFocus;
+    }
+    minMaxStatFilters[indexToFocus]?.focus();
+  }
 
   /**
    * Basically a WebDriver script to click and find a filter given a filter
@@ -182,20 +191,22 @@ export class ItemTradePage {
       return;
     }
 
-      // Focusing is what brings up the menu to select a stat.
-      focusTarget.focus();
-      // More flakiness. This basically waits until the popup window updates for add
-      // stats.
-      await waitUntil(() =>
-        Boolean(
-          focusTarget
-            .closest(Selectors.PARENT_FILTER_GROUP)
-            ?.querySelector(Selectors.STAT_FILTER_ACTIVE)
-        )
-      );
-      emulateKeyboard(spec.readableName, focusTarget);
+    // Focusing is what brings up the menu to select a stat.
+    focusTarget.focus();
+    // More flakiness. This basically waits until the popup window updates for add
+    // stats.
+    await waitUntil(() =>
+      Boolean(
+        focusTarget
+          .closest(Selectors.PARENT_FILTER_GROUP)
+          ?.querySelector(Selectors.STAT_FILTER_ACTIVE)
+      )
+    );
+    emulateKeyboard(spec.readableName, focusTarget);
 
-    const parentFilterGroup = focusTarget.closest(Selectors.PARENT_FILTER_GROUP);
+    const parentFilterGroup = focusTarget.closest(
+      Selectors.PARENT_FILTER_GROUP
+    );
     if (!parentFilterGroup) {
       console.error("Missing parent filter group.");
       return;
@@ -209,27 +220,29 @@ export class ItemTradePage {
       const selectOptions = [
         ...(parentFilterGroup?.querySelectorAll<HTMLButtonElement>(
           Selectors.STAT_FILTER_DROPDOWN_ELEMENTS
-        ) || [])];
-      return selectOptions.every(e =>
-        e.textContent!.includes(spec.readableName));
-    }
-    );
+        ) || []),
+      ];
+      return selectOptions.every((e) =>
+        e.textContent!.includes(spec.readableName)
+      );
+    });
 
     // Calculate which item to click. Now, this is again tricky: tags like
     // "Pseudo" or "Fractured" need to be compared in a semihacky way; there's
     // no super-clean way to do string comparison.
     const selectOptions = [
       ...(parentFilterGroup?.querySelectorAll<HTMLButtonElement>(
-          Selectors.STAT_FILTER_DROPDOWN_ELEMENTS
+        Selectors.STAT_FILTER_DROPDOWN_ELEMENTS
       ) || []),
     ];
 
     let selectedOption = null;
     for (const optionNode of selectOptions) {
       const normalized = optionNode.textContent!.trim().toLowerCase();
-     const foundMatch = 
+      const foundMatch =
         spec.statSubcategory &&
-        normalized === `${spec.statSubcategory} ${spec.readableName.toLowerCase()}`;
+        normalized ===
+          `${spec.statSubcategory} ${spec.readableName.toLowerCase()}`;
       if (foundMatch) {
         selectedOption = optionNode;
       }
@@ -247,12 +260,14 @@ export class ItemTradePage {
     // This is a flaky part. Unfortunately if we want to chain actions like
     // this, like WebDriver, we need to fake-wait until an element appears (a
     // new filter will be added).
-    const preClickFiltersLength =
-      parentFilterGroup.querySelectorAll(Selectors.GENERIC_FILTER_LINE)!.length;
+    const preClickFiltersLength = parentFilterGroup.querySelectorAll(
+      Selectors.GENERIC_FILTER_LINE
+    )!.length;
 
     await waitUntil(
       () =>
-        parentFilterGroup.querySelectorAll(Selectors.GENERIC_FILTER_LINE).length ===
+        parentFilterGroup.querySelectorAll(Selectors.GENERIC_FILTER_LINE)
+          .length ===
         preClickFiltersLength + 1
     );
 
@@ -263,8 +278,9 @@ export class ItemTradePage {
     //
     // It's really really important that you querySelectorAll again here: do not
     // use a stale variable.
-    const filtersPostClick =
-      parentFilterGroup.querySelectorAll(Selectors.GENERIC_FILTER_LINE);
+    const filtersPostClick = parentFilterGroup.querySelectorAll(
+      Selectors.GENERIC_FILTER_LINE
+    );
     const secondToLastFilter = filtersPostClick.item(
       Math.max(filtersPostClick.length - 2, 0)
     );
@@ -272,9 +288,11 @@ export class ItemTradePage {
       Selectors.INPUT_MIN_MAX
     );
     const nearestMultiselectInput =
-      secondToLastFilter?.querySelector<HTMLInputElement>(Selectors.MULTISELECT_INPUT);
+      secondToLastFilter?.querySelector<HTMLInputElement>(
+        Selectors.MULTISELECT_INPUT
+      );
     if (nearestMinInput) {
-    nearestMinInput.focus();
+      nearestMinInput.focus();
     } else if (nearestMultiselectInput) {
       // Some types, like temple rooms, have another multiselect input.
       nearestMultiselectInput.focus();
@@ -300,6 +318,8 @@ export class ItemTradePage {
     const filterGroup = el.closest(Selectors.PARENT_FILTER_GROUP);
     filterGroup?.querySelector<HTMLButtonElement>(".toggle-btn.off")?.click();
     // Need to wait until it shows.
-    await waitUntil(() => Boolean(filterGroup?.querySelector(".toggle-btn:not(.off)")));
+    await waitUntil(() =>
+      Boolean(filterGroup?.querySelector(".toggle-btn:not(.off)"))
+    );
   }
 }

@@ -76,28 +76,26 @@ const Omnibox: React.FC<OmniboxProps> = ({
     HOTKEY_CONFIG,
     [selectedIndex, searchResults]
   );
-  const handleResultClick = (index: number) => (e: React.SyntheticEvent |
-    KeyboardEvent) => {
-    e.preventDefault();
+  const handleResultClick =
+    (index: number) => (e: React.SyntheticEvent | KeyboardEvent) => {
+      e.preventDefault();
 
       // The whole filter section may be hidden. For example, after a search
       // result. Show if needed.
-    tradePage.maybeShowFilters();
-    const spec = searchResults[index];
-    if (spec.isStatFilter) {
-      tradePage.addStatFilterSpec(spec);
-    } else {
-      tradePage.focusClosestSiblingInput(spec)
-    }
-    closeBox();
-  };
+      tradePage.maybeShowFilters();
+      const spec = searchResults[index];
+      if (spec.isStatFilter) {
+        tradePage.addStatFilterSpec(spec);
+      } else {
+        tradePage.focusClosestSiblingInput(spec);
+      }
+      closeBox();
+    };
 
-  useHotkeys(
-    "enter",
-    handleResultClick(selectedIndex),
-    HOTKEY_CONFIG,
-    [searchResults, selectedIndex]
-  );
+  useHotkeys("enter", handleResultClick(selectedIndex), HOTKEY_CONFIG, [
+    searchResults,
+    selectedIndex,
+  ]);
 
   const searcher = React.useMemo(() => {
     return new FuzzyFilterSpecSearcher(filterSpecs);
