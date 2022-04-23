@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import React from "react";
 import { FilterSpec } from "../../lib/filter_spec";
 import Space from "../Space";
 
@@ -37,8 +38,18 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   isSelected,
   handleClick,
 }) => {
+  // TODO: Fix scrolling
+  // Primitive scrolling so when you use down arrow, it keeps following the
+  // item. This, of course, doesn't work well if you're scrolling upwards.
+  const itemRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (isSelected && itemRef.current) {
+      itemRef.current.scrollIntoView(false);
+    }
+  }, [isSelected]);
+
   return (
-    <ItemDiv isSelected={isSelected} onClick={handleClick}>
+    <ItemDiv isSelected={isSelected} onClick={handleClick} ref={itemRef}>
       {spec.statSubcategory && (
         <SubcategorySpan>{spec.statSubcategory}</SubcategorySpan>
       )}
