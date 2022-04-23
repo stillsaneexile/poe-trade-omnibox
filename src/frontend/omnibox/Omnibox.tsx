@@ -76,6 +76,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
     HOTKEY_CONFIG,
     [selectedIndex, searchResults]
   );
+
   const handleResultClick =
     (index: number) => (e: React.SyntheticEvent | KeyboardEvent) => {
       e.preventDefault();

@@ -25,7 +25,11 @@ const Container = () => {
   const [filterSpecs, setFilterSpecs] = React.useState<FilterSpec[]>([]);
   const [areSpecsInitialized, setAreSpecsInitialized] = React.useState(false);
   const tradePage = React.useMemo(() => {
-    return new ItemTradePage();
+    const page = new ItemTradePage();
+    // So we async load it twice, once here, and once the first time the omnibox
+    // opens.
+    page.initializeFilterSpecs();
+    return page;
   }, []);
   // Used to focus
 
@@ -45,6 +49,7 @@ const Container = () => {
     (e) => {
       e.preventDefault();
 
+      setIsHelpShown(false);
       // Loading this in the memo for the tradePage doesn't work, because the
       // DOM hasn't loaded yet and this scrapes the page. Presumably no one is
       // spamming the semicolon while the page is still loading, although if
@@ -93,6 +98,7 @@ const Container = () => {
     (e) => {
       e.preventDefault();
       setIsHelpShown((v) => !v);
+      setIsOmniboxShown(false);
     },
     HOTKEY_CONFIG
   );
