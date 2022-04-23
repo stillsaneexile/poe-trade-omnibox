@@ -107,6 +107,10 @@ const Omnibox: React.FC<OmniboxProps> = ({
   const handleResultClick = (index: number) => (e: React.SyntheticEvent |
     KeyboardEvent) => {
     e.preventDefault();
+
+      // The whole filter section may be hidden. For example, after a search
+      // result. Show if needed.
+    tradePage.maybeShowFilters();
     const spec = searchResults[index];
     if (spec.isStatFilter) {
       tradePage.addStatFilterSpec(spec);
@@ -148,7 +152,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
           return (
             <SearchResultItem
               spec={result}
-              isSelected={idx == selectedIndex}
+              isSelected={idx === selectedIndex}
               handleClick={handleResultClick(idx)}
             />
           );

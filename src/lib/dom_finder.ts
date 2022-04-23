@@ -32,7 +32,7 @@ const Selectors: Readonly<Record<string, string>> = {
   // relative to some other object to accurately get the one you want.
   STAT_FILTER_MINMAX: "input.minmax",
   // Use with .closest() to find the same filter group.
-  PARENT_FILTER_GROUP: ".filter-group-body",
+  PARENT_FILTER_GROUP: ".filter-group",
   // Pretty complicated.
   // .multiselect__element prevents selecting "No results found."
   // The :not clause prevents selecting the headers that appear ("Pseudo",
@@ -45,6 +45,9 @@ const Selectors: Readonly<Record<string, string>> = {
   // Used throughout the app for anything that can be focused to bring up a
   // select.
   MULTISELECT_INPUT: "input.multiselect__input",
+  // The presence of this indicates that filters are hidden.
+  ARE_FILTERS_HIDDEN: ".search-advanced-hidden",
+  TOGGLE_FILTERS_BUTTON: ".toggle-search-btn",
 };
 
 const STAT_MODS_API_ENDPOINT =
@@ -56,7 +59,7 @@ export class ItemTradePage {
    * for non-stat filters (those on the left side of the trade UI, such as
    * sockets, links, etc).
    */
-  focusClosestSiblingInput(filterSpec: FilterSpec) {
+  async focusClosestSiblingInput(filterSpec: FilterSpec) {
     invariant(!filterSpec.isStatFilter);
       const allTitleNodes = document.querySelectorAll(
         Selectors.FILTER_TITLE_NON_STAT
@@ -71,7 +74,12 @@ export class ItemTradePage {
       }
       const closestSiblingInput =
         matchingTitleNode.parentElement?.querySelector("input");
-    closestSiblingInput?.focus();
+    if (!closestSiblingInput) {
+      console.error("Couldn't find sibling input for non-stat spec.");
+      return;
+    }
+    await this.maybeExpandParentSection(closestSiblingInput);
+    closestSiblingInput.focus();
   }
 
   /**
@@ -111,6 +119,12 @@ export class ItemTradePage {
 
     filterSpecs.push.apply(filterSpecs, statFilterSpecs);
     return filterSpecs;
+  }
+
+  maybeShowFilters() {
+    if (document.querySelector(Selectors.ARE_FILTERS_HIDDEN)) {
+      document.querySelector<HTMLButtonElement>(Selectors.TOGGLE_FILTERS_BUTTON)?.click();
+    }
   }
 
   /**
@@ -238,5 +252,16 @@ export class ItemTradePage {
   clearPage() {
     document.querySelector<HTMLButtonElement>(Selectors.CLEAR_BUTTON)!.click();
     document.querySelector<HTMLInputElement>(Selectors.MAIN_SEARCH)!.value = "";
+  }
+
+  /**
+   * A filter section could be hidden and needs to be expanded if it's not
+   * already visible. This finds the nearest such parent.
+   */
+  private async maybeExpandParentSection(el: HTMLElement) {
+    const filterGroup = el.closest(Selectors.PARENT_FILTER_GROUP);
+    filterGroup?.querySelector<HTMLButtonElement>(".toggle-btn.off")?.click();
+    // Need to wait until it shows.
+    await waitUntil(() => Boolean(filterGroup?.querySelector(".toggle-btn:not(.off)")));
   }
 }
