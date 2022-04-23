@@ -49,9 +49,9 @@ const HelpPage: React.FC<HelpPageProps> = ({ closeBox }) => {
     <PopupDiv onBlur={closeBox}>
       <HelpContainer>
         <h2>Path of Exile Trade Site Omnibox</h2>
-        Search on the trade site without touching the mouse. Press <em>;</em> to
+        <p>Search on the trade site without touching the mouse. Press <em>;</em> to
         bring up the omnibox and start searching for filters to quickly jump to
-        them and add them to your search.
+        them and add them to your search.</p>
         <h3>Hotkeys</h3>
         <table>
           <tbody>
@@ -68,13 +68,13 @@ const HelpPage: React.FC<HelpPageProps> = ({ closeBox }) => {
         <h3>Examples</h3>
         <ul>
           <li>
-            <b>; + "frac strength"</b>
+            <b>; + "frac str"</b>: matches <b>frac</b>tured <b>str</b>ength
           </li>
           <li>
             <b>; + "links"</b>: jumps to the links filters
           </li>
           <li>
-            <b>; + "ax co res"</b>: finds maximum cold resistance
+            <b>; + "ax co res"</b>: finds m<b>ax</b>imum <b>co</b>ld <b>res</b>istance
           </li>
         </ul>
         <h3>Bugs and Feature Requests</h3>
