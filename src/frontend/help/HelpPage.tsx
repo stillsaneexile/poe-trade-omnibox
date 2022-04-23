@@ -78,7 +78,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ closeBox }) => {
           </li>
         </ul>
         <h3>Bugs and Feature Requests</h3>
-        Any sort of feedback can be left on
+        Any sort of feedback can be left on{" "}
         <a
           target="_blank"
           href="https://github.com/stillsaneexile/poe-trade-omnibox"
