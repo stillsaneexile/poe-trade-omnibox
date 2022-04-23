@@ -14,7 +14,7 @@ abstract class FilterSpecSearcher {
   // parameterized later, but this is a reasonable default for now.
   static MIN_QUERY_LENGTH = 2;
   // Maximum number of results; algorithm should terminate early in this case.
-  static MAX_RESULTS_LENGTH = 25;
+  static MAX_RESULTS_LENGTH = 50;
 
   protected _filterSpecs: FilterSpec[];
 
@@ -34,7 +34,7 @@ abstract class FilterSpecSearcher {
     }
     const lowercaseQuery = query.toLowerCase();
     const results = this.searchInternal(lowercaseQuery);
-    return this.sortResults(results, lowercaseQuery);
+    return this.sortResults(results);
   }
 
   /**
@@ -46,17 +46,19 @@ abstract class FilterSpecSearcher {
 
   /**
    * Implements some type of reasonable sorting for the results.
-   * For now, this is simple: it takes anything with explicit matches and puts
-   * them first, then everything else is random after.
+   *
+   * For now, this is simple, putting non-stat filters first.
+   *
+   * Later, it would be nice to sort this similarly to the trade UI.
    */
-  private sortResults(results: FilterSpec[], query: string): FilterSpec[] {
+  private sortResults(results: FilterSpec[]): FilterSpec[] {
     const toSort = [...results];
     toSort.sort((a, b) => {
-      if (a.readableName.toLowerCase().includes(query)) {
-        return -1;
-      }
-      if (b.readableName.toLowerCase().includes(query)) {
+      if (a.isStatFilter && !b.isStatFilter) {
         return 1;
+      }
+      if (b.isStatFilter && !a.isStatFilter) {
+        return -1;
       }
       return 0;
     });

@@ -16,7 +16,7 @@ const OmniboxDiv = styled.div`
   min-height: 300px;
   height: 500px;
   max-height: 80%;
-  opacity: 0.9;
+  opacity: 0.98;
   z-index: 1000;
   overflow-y: scroll;
 
