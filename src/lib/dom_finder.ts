@@ -11,8 +11,10 @@ import waitUntil from "./wait_until";
  * This is due to a quirk for our matching algorithm where explicit mods don't
  * have the word "explicit" to the left of their stat filters.
  */
-
 const EXPLICIT_STAT_SUBCATEGORY = "explicit";
+
+const NO_RESULTS_PLACEHOLDER = "consider changing the search query.";
+
 /**
  * DOM selectors used for scraping / finding parts of the page.
  *
@@ -120,46 +122,73 @@ export class ItemTradePage {
       Selectors.ADD_STAT_FILTER
     );
     const focusTarget = filters[0];
-    if (focusTarget) {
+    if (!focusTarget) {
+      console.error("Missing focus target.");
+      return;
+    }
+
+
       // Focusing is what brings up the menu to select a stat.
       focusTarget.focus();
-// More flakiness. This basically waits until the popup window updates for add
-// stats.
-await waitUntil(() =>
-  Boolean(focusTarget.closest('.filter-body')?.querySelector('.multiselect--active')));
-emulateKeyboard(spec.readableName, focusTarget)
-    }
+      // More flakiness. This basically waits until the popup window updates for add
+      // stats.
+      await waitUntil(() =>
+        Boolean(
+          focusTarget
+            .closest(".filter-body")
+            ?.querySelector(".multiselect--active")
+        )
+      );
+      emulateKeyboard(spec.readableName, focusTarget);
 
     const parentFilterGroup = focusTarget.closest(".filter-group-body");
     if (!parentFilterGroup) {
       console.error("Missing parent filter group.");
       return;
     }
-    const preClickFiltersLength =
-      parentFilterGroup.querySelectorAll(".filter")!.length;
 
-    waitUntil(() =>
-      focusTarget.closest(".filter")!.textContent!.includes(spec.readableName));
+    // Flaky WebDriver-ish behavior. Need to wait until the dropdown updates
+    // You can't just check for the name because it could be something on the
+    // initial list.
+    await waitUntil(() => {
+      const filterParent = focusTarget.closest(".filter-group.expanded");
+      // .multiselect__element prevents selecting "No results found."
+      const selectOptions = [
+        ...(filterParent?.querySelectorAll<HTMLButtonElement>(
+          ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)"
+        ) || [])];
+      console.log(selectOptions);
+      return selectOptions.every(e =>
+        e.textContent!.includes(spec.readableName));
+    }
+    );
 
     // Calculate which item to click. Now, this is again tricky: tags like
     // "Pseudo" or "Fractured" need to be compared in a semihacky way; there's
     // no super-clean way to do string comparison.
-    const filterParent = focusTarget.closest(".filter");
-    const selectOptions = [...(filterParent?.querySelectorAll<HTMLButtonElement>(
-      ".multiselect__option"
-    ) || [])];
+    const filterParent = focusTarget.closest(".filter-group.expanded");
+    const selectOptions = [
+      ...(filterParent?.querySelectorAll<HTMLButtonElement>(
+        ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)"
+      ) || []),
+    ];
 
     let selectedOption = null;
     for (const optionNode of selectOptions) {
       const normalized = optionNode.textContent!.trim().toLowerCase();
       let matchesSubcategory = true;
-      if (spec.statSubcategory && spec.statSubcategory !==
-        EXPLICIT_STAT_SUBCATEGORY) {
+      if (
+        spec.statSubcategory &&
+        spec.statSubcategory !== EXPLICIT_STAT_SUBCATEGORY
+      ) {
         matchesSubcategory = normalized.startsWith(spec.statSubcategory);
       }
 
-      if (matchesSubcategory &&
-        normalized.includes(spec.readableName.toLowerCase())) {
+      console.log(normalized, spec.readableName.toLowerCase());
+      if (
+        matchesSubcategory &&
+        normalized.includes(spec.readableName.toLowerCase())
+      ) {
         selectedOption = optionNode;
       }
     }
@@ -174,6 +203,9 @@ emulateKeyboard(spec.readableName, focusTarget)
 
     // This is a flaky part. Unfortunately if we want to chain actions like
     // this, like WebDriver, we need to fake-wait until an element appears.
+    const preClickFiltersLength =
+      parentFilterGroup.querySelectorAll(".filter")!.length;
+
     await waitUntil(
       () =>
         parentFilterGroup.querySelectorAll(".filter").length ===

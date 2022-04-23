@@ -11,8 +11,7 @@
  * https://stackoverflow.com/a/69761966/892168
  */
 const emulateKeyboard = (value: string, el: HTMLInputElement) => {
-  document.execCommand("insertText", false, value)
+  document.execCommand("insertText", false, value);
 };
-
 
 export default emulateKeyboard;

@@ -39,12 +39,12 @@ const OmniboxDiv = styled.div`
 `;
 
 const InputContainerDiv = styled.div`
-// Too lazy to figure this shit out so just use a flexbox so the input sizes
-// correctly
-// https://stackoverflow.com/questions/35059569/html-input-element-not-taking-100-width
-display: flex;
+  // Too lazy to figure this shit out so just use a flexbox so the input sizes
+  // correctly
+  // https://stackoverflow.com/questions/35059569/html-input-element-not-taking-100-width
+  display: flex;
   input {
-  flex: 1;
+    flex: 1;
     border: none;
     outline: none;
     background-color: black;
@@ -116,10 +116,10 @@ const Omnibox: React.FC<OmniboxProps> = ({
   );
 
   const handleResultClick = (index: number) => (e: React.SyntheticEvent) => {
-      e.preventDefault();
-      tradePage.addStatFilterSpec(searchResults[index]);
-      closeBox();
-  }
+    e.preventDefault();
+    tradePage.addStatFilterSpec(searchResults[index]);
+    closeBox();
+  };
 
   const searcher = React.useMemo(() => {
     return new FuzzyFilterSpecSearcher(filterSpecs);
@@ -135,13 +135,20 @@ const Omnibox: React.FC<OmniboxProps> = ({
   return (
     <OmniboxDiv onBlur={closeBox}>
       <InputContainerDiv>
-      <input onChange={handleChange} autoFocus placeholder="Add a Filter..." />
-</InputContainerDiv>
+        <input
+          onChange={handleChange}
+          autoFocus
+          placeholder="Add a Filter..."
+        />
+      </InputContainerDiv>
       <SearchResultsDiv>
         {searchResults.map((result, idx) => {
           return (
-            <SearchResultItem spec={result} isSelected={idx == selectedIndex}
-              handleClick={handleResultClick(idx)}/>
+            <SearchResultItem
+              spec={result}
+              isSelected={idx == selectedIndex}
+              handleClick={handleResultClick(idx)}
+            />
           );
         })}
       </SearchResultsDiv>
