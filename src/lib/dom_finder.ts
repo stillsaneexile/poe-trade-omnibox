@@ -118,10 +118,7 @@ export class ItemTradePage {
       focusTarget.focus();
     }
 
-    const filterParent = focusTarget.closest(".filter");
-    const selectOption = filterParent?.querySelectorAll<HTMLButtonElement>(
-      ".multiselect__option"
-    );
+    /*
     const parentFilterGroup = focusTarget.closest(".filter-group-body");
     if (!parentFilterGroup) {
       console.error("Missing parent filter group.");
@@ -130,8 +127,38 @@ export class ItemTradePage {
     const preClickFiltersLength =
       parentFilterGroup.querySelectorAll(".filter")!.length;
 
+    waitUntil(() =>
+      focusTarget.closest(".filter")!.textContent!.includes(spec.readableName));
+
+    // Calculate which item to click. Now, this is again tricky: tags like
+    // "Pseudo" or "Fractured" need to be compared in a semihacky way; there's
+    // no super-clean way to do string comparison.
+    const filterParent = focusTarget.closest(".filter");
+    const selectOptions = [...(filterParent?.querySelectorAll<HTMLButtonElement>(
+      ".multiselect__option"
+    ) || [])];
+
+    let selectedOption = null;
+    for (const optionNode of selectOptions) {
+      const normalized = optionNode.textContent!.trim().toLowerCase();
+      let matchesSubcategory = true;
+      if (spec.statSubcategory) {
+        matchesSubcategory = normalized.startsWith(spec.statSubcategory);
+      }
+
+      if (matchesSubcategory &&
+        normalized.includes(spec.readableName.toLowerCase())) {
+        selectedOption = optionNode;
+      }
+    }
+    if (!selectedOption) {
+      // Really shouldn't happen unless there's a bug in the matching above.
+      console.error("There was an error finding the option.");
+      return;
+    }
+
     // Simulate a click on the item.
-    selectOption?.item(2).click();
+    selectedOption.click();
 
     // This is a flaky part. Unfortunately if we want to chain actions like
     // this, like WebDriver, we need to fake-wait until an element appears.
@@ -160,6 +187,7 @@ export class ItemTradePage {
       return;
     }
     nearestMinInput.focus();
+    */
   }
 
   /**
