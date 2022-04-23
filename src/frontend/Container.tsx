@@ -12,6 +12,7 @@ const Keys = {
   SEMICOLON: ";",
   EQUALS: "=",
   LBRACKET: "[",
+  QUESTION_MARK: "?",
 };
 
 /**
@@ -84,6 +85,10 @@ const Container = () => {
     },
     HOTKEY_CONFIG,
   )
+
+  useHotkeys(
+    Keys.QUESTION_MARK,
+    () => setIsHelpShown(v => !v), HOTKEY_CONFIG);
 
   return (
     <>
