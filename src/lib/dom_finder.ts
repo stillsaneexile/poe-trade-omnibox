@@ -2,6 +2,7 @@
  * Functions related to manipulating the DOM.
  */
 
+import invariant from "ts-invariant";
 import { parsePoeStatData } from "./api_data_parser";
 import emulateKeyboard from "./emulate_keyboard";
 import { FilterSpec } from "./filter_spec";
@@ -48,32 +49,26 @@ const STAT_MODS_API_ENDPOINT =
 
 export class ItemTradePage {
   /**
-   * Given a FilterSpec, returns the nearest HTML input element. This could be a
-   * min-max filter, a stat filter, etc.
+   * Given a FilterSpec, returns the nearest HTML input element. This is used
+   * for non-stat filters (those on the left side of the trade UI, such as
+   * sockets, links, etc).
    */
-  getClosestSiblingInput(filterSpec: FilterSpec): HTMLElement | null {
-    // 1. Non-static filters: Try to find any non-stat filter titles that match
-    //    it; if so, click the nearest input.
-    if (filterSpec.isStatFilter) {
+  focusClosestSiblingInput(filterSpec: FilterSpec) {
+    invariant(!filterSpec.isStatFilter);
       const allTitleNodes = document.querySelectorAll(
         Selectors.FILTER_TITLE_NON_STAT
       );
       const matchingTitleNode = [...allTitleNodes].find((node) => {
-        const trimmedTitle = node.textContent;
+        const trimmedTitle = node.textContent!.trim();
         return trimmedTitle === filterSpec.readableName;
       });
       if (!matchingTitleNode) {
-        // TODO: Handle error
-        return null;
+        console.error("Couldn't find title: " + filterSpec.readableName);
+        return;
       }
       const closestSiblingInput =
         matchingTitleNode.parentElement?.querySelector("input");
-      return closestSiblingInput || null;
-    }
-    // 2. Stat-filters: more complicated. Basically do a web-driver run and type
-    // it in to the box, then select the correct one.
-
-    return null;
+    closestSiblingInput?.focus();
   }
 
   /**

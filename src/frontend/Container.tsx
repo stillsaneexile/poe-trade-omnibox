@@ -20,15 +20,9 @@ const Container = () => {
   const [isHelpShown, setIsHelpShown] = React.useState(false);
   const [isOmniboxShown, setIsOmniboxShown] = React.useState(false);
   const [filterSpecs, setFilterSpecs] = React.useState<FilterSpec[]>([]);
+  const [areSpecsInitialized, setAreSpecsInitialized] = React.useState(false);
   const tradePage = React.useMemo(() => {
-    const tradePage = new ItemTradePage();
-    // This kicks off some initialization, such as fetching. Don't await on this
-    // so that hotkeys work immediately, but use the callback result of
-    // initialized filter data and "transfer" it to a React state.
-    tradePage.initializeFilterSpecs().then((specs) => {
-      setFilterSpecs(specs);
-    });
-    return tradePage;
+    return new ItemTradePage();
   }, []);
   // Used to focus
 
@@ -47,7 +41,20 @@ const Container = () => {
     Keys.SEMICOLON,
     (e) => {
       e.preventDefault();
+
+      // Loading this in the memo for the tradePage doesn't work, because the
+      // DOM hasn't loaded yet and this scrapes the page. Presumably no one is
+      // spamming the semicolon while the page is still loading, although if
+      // that is the case, we might need to try reloading on every omnibox open.
+      if (!areSpecsInitialized) {
+        setAreSpecsInitialized(true);
+        tradePage.initializeFilterSpecs().then((specs) => {
+          setFilterSpecs(specs);
+          setIsOmniboxShown(!isOmniboxShown);
+        });
+      } else {
       setIsOmniboxShown(!isOmniboxShown);
+      }
     },
     HOTKEY_CONFIG
   );

@@ -104,22 +104,24 @@ const Omnibox: React.FC<OmniboxProps> = ({
     HOTKEY_CONFIG,
     [selectedIndex, searchResults]
   );
+  const handleResultClick = (index: number) => (e: React.SyntheticEvent |
+    KeyboardEvent) => {
+    e.preventDefault();
+    const spec = searchResults[index];
+    if (spec.isStatFilter) {
+      tradePage.addStatFilterSpec(spec);
+    } else {
+      tradePage.focusClosestSiblingInput(spec)
+    }
+    closeBox();
+  };
+
   useHotkeys(
     "enter",
-    (e) => {
-      e.preventDefault();
-      tradePage.addStatFilterSpec(searchResults[selectedIndex]);
-      closeBox();
-    },
+    handleResultClick(selectedIndex),
     HOTKEY_CONFIG,
     [searchResults, selectedIndex]
   );
-
-  const handleResultClick = (index: number) => (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    tradePage.addStatFilterSpec(searchResults[index]);
-    closeBox();
-  };
 
   const searcher = React.useMemo(() => {
     return new FuzzyFilterSpecSearcher(filterSpecs);

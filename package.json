@@ -23,7 +23,8 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hotkeys-hook": "^3.4.4",
-    "react-scripts": "5.0.0"
+    "react-scripts": "5.0.0",
+    "ts-invariant": "^0.9.4"
   },
   "devDependencies": {
     "@types/chrome": "0.0.158",
