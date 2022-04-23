@@ -18,7 +18,6 @@ const waitUntil = async (
     let interval = setInterval(() => {
       if (!condition() && timeWaitedMs < maxWaitMs) {
         timeWaitedMs += CHECK_INTERVAL_MS;
-        console.log("waiting");
         return;
       }
 

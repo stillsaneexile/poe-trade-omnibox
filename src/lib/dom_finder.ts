@@ -8,14 +8,6 @@ import { FilterSpec } from "./filter_spec";
 import waitUntil from "./wait_until";
 
 /**
- * This is due to a quirk for our matching algorithm where explicit mods don't
- * have the word "explicit" to the left of their stat filters.
- */
-const EXPLICIT_STAT_SUBCATEGORY = "explicit";
-
-const NO_RESULTS_PLACEHOLDER = "consider changing the search query.";
-
-/**
  * DOM selectors used for scraping / finding parts of the page.
  *
  * Rather than hard-coding selectors, this helps to makes the process agnostic.
@@ -176,17 +168,11 @@ export class ItemTradePage {
     let selectedOption = null;
     for (const optionNode of selectOptions) {
       const normalized = optionNode.textContent!.trim().toLowerCase();
-      const isExplicitSubcategory = spec.statSubcategory ===
-        EXPLICIT_STAT_SUBCATEGORY;
-      // Explicit needs to be exact match because the UI doesn't show "Explicit"
-      // to the left when constructing `normalized`.
-      const isExplicitAndExactMatch = isExplicitSubcategory && spec.readableName.toLowerCase() ;
-      const isSameSubcategoryAndPartialMatch = !isExplicitSubcategory &&
+     const foundMatch = 
         spec.statSubcategory &&
-        normalized.startsWith(spec.statSubcategory) &&
-        normalized.includes(spec.readableName.toLowerCase());
-
-      if (isExplicitAndExactMatch || isSameSubcategoryAndPartialMatch) {
+        normalized === `${spec.statSubcategory} ${spec.readableName.toLowerCase()}`;
+      console.log(foundMatch);
+      if (foundMatch) {
         selectedOption = optionNode;
       }
     }
@@ -198,6 +184,7 @@ export class ItemTradePage {
     }
 
     // Simulate a click on the item.
+    console.log(selectedOption.textContent);
     selectedOption.click();
 
     // This is a flaky part. Unfortunately if we want to chain actions like
