@@ -9,9 +9,6 @@ const ItemDiv = styled.div<{ isSelected: boolean }>`
     props.isSelected ? "rgb(70, 82, 96)" : "inherit"};
   padding: ${Space[8]} ${Space[4]};
   cursor: pointer;
-  :hover {
-    background-color: rgb(70, 82, 96);
-  }
 `;
 
 // Most CSS taken from trade site.

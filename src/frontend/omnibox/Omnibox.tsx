@@ -77,7 +77,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
     [selectedIndex, searchResults]
   );
 
-  const handleResultClick =
+  const handleResultSelect =
     (index: number) => (e: React.SyntheticEvent | KeyboardEvent) => {
       e.preventDefault();
 
@@ -93,7 +93,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
       closeBox();
     };
 
-  useHotkeys("enter", handleResultClick(selectedIndex), HOTKEY_CONFIG, [
+  useHotkeys("enter", handleResultSelect(selectedIndex), HOTKEY_CONFIG, [
     searchResults,
     selectedIndex,
   ]);
@@ -131,7 +131,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
             <SearchResultItem
               spec={result}
               isSelected={idx === selectedIndex}
-              handleClick={handleResultClick(idx)}
+              handleClick={handleResultSelect(idx)}
               handleHover={handleResultHover(idx)}
             />
           );
