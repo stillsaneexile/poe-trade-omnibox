@@ -15,10 +15,5 @@
 	  "css": [],
 	  "media": []
       }
-  ],
-
-  "permissions": [
-    "debugger",
-    "storage"
   ]
 }
