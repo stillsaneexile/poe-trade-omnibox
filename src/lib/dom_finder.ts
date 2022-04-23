@@ -30,6 +30,15 @@ const Selectors: Readonly<Record<string, string>> = {
   // A not-very-exact filter for the "min/max" fields. You'll need to use this
   // relative to some other object to accurately get the one you want.
   STAT_FILTER_MINMAX: "input.minmax",
+  // Use with .closest() to find the same filter group.
+  PARENT_FILTER_GROUP: ".filter-group-body",
+  // Pretty complicated.
+  // .multiselect__element prevents selecting "No results found."
+  // The :not clause prevents selecting the headers that appear ("Pseudo",
+  // "Fractured").
+  STAT_FILTER_DROPDOWN_ELEMENTS: ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)",
+  // The presence of such a class would indicate that some stat filter is open.
+  STAT_FILTER_ACTIVE: ".multiselect--active",
 };
 
 const STAT_MODS_API_ENDPOINT =
@@ -119,7 +128,6 @@ export class ItemTradePage {
       return;
     }
 
-
       // Focusing is what brings up the menu to select a stat.
       focusTarget.focus();
       // More flakiness. This basically waits until the popup window updates for add
@@ -127,13 +135,13 @@ export class ItemTradePage {
       await waitUntil(() =>
         Boolean(
           focusTarget
-            .closest(".filter-body")
-            ?.querySelector(".multiselect--active")
+            .closest(Selectors.PARENT_FILTER_GROUP)
+            ?.querySelector(Selectors.STAT_FILTER_ACTIVE)
         )
       );
       emulateKeyboard(spec.readableName, focusTarget);
 
-    const parentFilterGroup = focusTarget.closest(".filter-group-body");
+    const parentFilterGroup = focusTarget.closest(Selectors.PARENT_FILTER_GROUP);
     if (!parentFilterGroup) {
       console.error("Missing parent filter group.");
       return;
@@ -143,13 +151,11 @@ export class ItemTradePage {
     // You can't just check for the name because it could be something on the
     // initial list.
     await waitUntil(() => {
-      const filterParent = focusTarget.closest(".filter-group.expanded");
       // .multiselect__element prevents selecting "No results found."
       const selectOptions = [
-        ...(filterParent?.querySelectorAll<HTMLButtonElement>(
-          ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)"
+        ...(parentFilterGroup?.querySelectorAll<HTMLButtonElement>(
+          Selectors.STAT_FILTER_DROPDOWN_ELEMENTS
         ) || [])];
-      console.log(selectOptions.map(c => c.textContent));
       return selectOptions.every(e =>
         e.textContent!.includes(spec.readableName));
     }
@@ -158,10 +164,9 @@ export class ItemTradePage {
     // Calculate which item to click. Now, this is again tricky: tags like
     // "Pseudo" or "Fractured" need to be compared in a semihacky way; there's
     // no super-clean way to do string comparison.
-    const filterParent = focusTarget.closest(".filter-group.expanded");
     const selectOptions = [
-      ...(filterParent?.querySelectorAll<HTMLButtonElement>(
-        ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)"
+      ...(parentFilterGroup?.querySelectorAll<HTMLButtonElement>(
+          Selectors.STAT_FILTER_DROPDOWN_ELEMENTS
       ) || []),
     ];
 
@@ -171,7 +176,6 @@ export class ItemTradePage {
      const foundMatch = 
         spec.statSubcategory &&
         normalized === `${spec.statSubcategory} ${spec.readableName.toLowerCase()}`;
-      console.log(foundMatch);
       if (foundMatch) {
         selectedOption = optionNode;
       }
@@ -184,11 +188,11 @@ export class ItemTradePage {
     }
 
     // Simulate a click on the item.
-    console.log(selectedOption.textContent);
     selectedOption.click();
 
     // This is a flaky part. Unfortunately if we want to chain actions like
-    // this, like WebDriver, we need to fake-wait until an element appears.
+    // this, like WebDriver, we need to fake-wait until an element appears (a
+    // new filter will be added).
     const preClickFiltersLength =
       parentFilterGroup.querySelectorAll(".filter")!.length;
 
