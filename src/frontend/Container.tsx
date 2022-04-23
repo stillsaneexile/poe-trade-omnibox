@@ -12,7 +12,8 @@ const Keys = {
   SEMICOLON: ";",
   EQUALS: "=",
   LBRACKET: "[",
-  QUESTION_MARK: "?",
+  // https://github.com/JohannesKlauss/react-hotkeys-hook/issues/421
+  QUESTION_MARK: "shift+/"
 };
 
 /**
@@ -89,7 +90,10 @@ const Container = () => {
 
   useHotkeys(
     Keys.QUESTION_MARK,
-    () => setIsHelpShown((v) => !v),
+    (e) => {
+      e.preventDefault();
+      setIsHelpShown((v) => !v)
+    },
     HOTKEY_CONFIG
   );
 
