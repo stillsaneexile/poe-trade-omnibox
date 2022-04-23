@@ -42,6 +42,9 @@ const Selectors: Readonly<Record<string, string>> = {
   STAT_FILTER_ACTIVE: ".multiselect--active",
   // Can be used to count the number of filters added.
   GENERIC_FILTER_LINE: ".filter",
+  // Used throughout the app for anything that can be focused to bring up a
+  // select.
+  MULTISELECT_INPUT: "input.multiselect__input",
 };
 
 const STAT_MODS_API_ENDPOINT =
@@ -119,7 +122,9 @@ export class ItemTradePage {
     const filters = document.querySelectorAll<HTMLInputElement>(
       Selectors.ADD_STAT_FILTER
     );
-    const focusTarget = filters[0];
+    // For things like temple room stats, the added input is also of the same
+    // selector.
+    const focusTarget = filters[filters.length - 1];
     if (!focusTarget) {
       console.error("Missing focus target.");
       return;
@@ -214,11 +219,17 @@ export class ItemTradePage {
     const nearestMinInput = secondToLastFilter?.querySelector<HTMLInputElement>(
       Selectors.STAT_FILTER_MINMAX
     );
-    if (!nearestMinInput) {
-      console.error("Missing min input");
+    const nearestMultiselectInput =
+      secondToLastFilter?.querySelector<HTMLInputElement>(Selectors.MULTISELECT_INPUT);
+    if (nearestMinInput) {
+    nearestMinInput.focus();
+    } else if (nearestMultiselectInput) {
+      // Some types, like temple rooms, have another multiselect input.
+      nearestMultiselectInput.focus();
+    } else {
+      console.error("Missing min input and multiselect input.");
       return;
     }
-    nearestMinInput.focus();
   }
 
   /**

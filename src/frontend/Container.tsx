@@ -50,13 +50,13 @@ const Container = () => {
         setAreSpecsInitialized(true);
         tradePage.initializeFilterSpecs().then((specs) => {
           setFilterSpecs(specs);
-          setIsOmniboxShown(!isOmniboxShown);
+          setIsOmniboxShown(v => !v);
         });
       } else {
-      setIsOmniboxShown(!isOmniboxShown);
+        setIsOmniboxShown(v => !v);
       }
     },
-    HOTKEY_CONFIG
+    HOTKEY_CONFIG, [areSpecsInitialized]
   );
 
   useHotkeys(
@@ -79,13 +79,12 @@ const Container = () => {
   return (
     <>
       {isHelpShown && <HelpPage />}
-      {
-        <Omnibox
-          filterSpecs={filterSpecs}
-          closeBox={() => setIsOmniboxShown(false)}
-          tradePage={tradePage}
-        />
-      }
+  {isOmniboxShown && (        <Omnibox
+    filterSpecs={filterSpecs}
+    closeBox={() => setIsOmniboxShown(false)}
+    tradePage={tradePage}
+  />
+  )}
     </>
   );
 };
