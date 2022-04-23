@@ -26,9 +26,17 @@ const HELP_SPEC = [
 ];
 
 const HelpContainer = styled.div`
-  margin: ${Space[24]};
+  margin: ${Space[16]} ${Space[24]};
   table {
     margin-top: ${Space[12]};
+  }
+
+  h3 {
+    margin: ${Space[8]} 0 ${Space[4]};
+  }
+
+  b {
+    color: #82786a;
   }
 `;
 
@@ -40,6 +48,10 @@ const HelpPage: React.FC<HelpPageProps> = ({ closeBox }) => {
   return (
     <PopupDiv onBlur={closeBox}>
       <HelpContainer>
+        <h2>Path of Exile Trade Site Omnibox</h2>
+        Search on the trade site without touching the mouse. Press <em>;</em> to
+        bring up the omnibox and start searching for filters to quickly jump to
+        them and add them to your search.
         <h3>Hotkeys</h3>
         <table>
           <tbody>
@@ -56,27 +68,26 @@ const HelpPage: React.FC<HelpPageProps> = ({ closeBox }) => {
         <h3>Examples</h3>
         <ul>
           <li>
-            <b>;</b> + <b>frac strength</b>
+            <b>; + "frac strength"</b>
           </li>
           <li>
-            <b>;</b> + <b>links</b> jumps to the links filters
+            <b>; + "links"</b>: jumps to the links filters
           </li>
           <li>
-            <b>;</b> + <b>ax co res</b> yields maximum cold resistance (as an
-            example of the matching)
+            <b>; + "ax co res"</b>: finds maximum cold resistance
           </li>
         </ul>
-        <h3>Bugs and feature requests</h3>
-        Any sort of feedback can be left on Github
+        <h3>Bugs and Feature Requests</h3>
+        Any sort of feedback can be left on
         <a
           target="_blank"
           href="https://github.com/stillsaneexile/poe-trade-omnibox"
         >
           Github
         </a>{" "}
-        or
+        or{" "}
         <a target="_blank" href="https://www.reddit.com/user/iplaypathofexile/">
-          reddit
+          Reddit
         </a>
         .
       </HelpContainer>
