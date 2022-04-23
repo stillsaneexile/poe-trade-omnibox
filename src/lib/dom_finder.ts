@@ -116,6 +116,18 @@ export class ItemTradePage {
     if (focusTarget) {
       // Focusing is what brings up the menu to select a stat.
       focusTarget.focus();
+function imitateKeyInput(el: any, keyChar:any) {
+  if (el) {
+    const keyboardEventInit = {bubbles:false, cancelable:false, composed:false, key:'', code:'', location:0};
+    el.dispatchEvent(new KeyboardEvent("keydown", keyboardEventInit));
+    el.value = keyChar;
+    el.dispatchEvent(new KeyboardEvent("keyup", keyboardEventInit));
+  } 
+}
+await waitUntil(() =>
+  Boolean(focusTarget.closest('.filter-body')?.querySelector('.multiselect--active')));
+imitateKeyInput(focusTarget, "a")
+// setTimeout(() => imitateKeyInput(focusTarget, "a"), 500);
     }
 
     /*
