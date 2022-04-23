@@ -109,6 +109,13 @@ const Omnibox: React.FC<OmniboxProps> = ({
     setSelectedIndex(0);
   };
 
+  // Basically this logic makes it so that hovering causes the thing to be
+  // selected, therefore meaning if for some reason you hover + press enter, it
+  // chooses the right one.
+  const handleResultHover = (index: number) => () => {
+    setSelectedIndex(index);
+  };
+
   return (
     <PopupDiv onBlur={closeBox}>
       <InputContainerDiv>
@@ -125,6 +132,7 @@ const Omnibox: React.FC<OmniboxProps> = ({
               spec={result}
               isSelected={idx === selectedIndex}
               handleClick={handleResultClick(idx)}
+              handleHover={handleResultHover(idx)}
             />
           );
         })}

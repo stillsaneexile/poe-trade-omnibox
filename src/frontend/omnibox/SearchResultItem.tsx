@@ -31,12 +31,14 @@ interface SearchResultItemProps {
   spec: FilterSpec;
   isSelected: boolean;
   handleClick: (e: React.SyntheticEvent) => void;
+  handleHover: () => void;
 }
 
 const SearchResultItem: React.FC<SearchResultItemProps> = ({
   spec,
   isSelected,
   handleClick,
+  handleHover,
 }) => {
   // TODO: Fix scrolling
   // Primitive scrolling so when you use down arrow, it keeps following the
@@ -49,7 +51,8 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   }, [isSelected]);
 
   return (
-    <ItemDiv isSelected={isSelected} onClick={handleClick} ref={itemRef}>
+    <ItemDiv isSelected={isSelected} onClick={handleClick}
+      onMouseEnter={handleHover} ref={itemRef}>
       {spec.statSubcategory && (
         <SubcategorySpan>{spec.statSubcategory}</SubcategorySpan>
       )}
