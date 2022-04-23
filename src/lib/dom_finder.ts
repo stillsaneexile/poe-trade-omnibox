@@ -3,6 +3,7 @@
  */
 
 import { parsePoeStatData } from "./api_data_parser";
+import emulateKeyboard from "./emulate_keyboard";
 import { FilterSpec } from "./filter_spec";
 import waitUntil from "./wait_until";
 
@@ -116,21 +117,13 @@ export class ItemTradePage {
     if (focusTarget) {
       // Focusing is what brings up the menu to select a stat.
       focusTarget.focus();
-function imitateKeyInput(el: any, keyChar:any) {
-  if (el) {
-    const keyboardEventInit = {bubbles:false, cancelable:false, composed:false, key:'', code:'', location:0};
-    el.dispatchEvent(new KeyboardEvent("keydown", keyboardEventInit));
-    el.value = keyChar;
-    el.dispatchEvent(new KeyboardEvent("keyup", keyboardEventInit));
-  } 
-}
+// More flakiness. This basically waits until the popup window updates for add
+// stats.
 await waitUntil(() =>
   Boolean(focusTarget.closest('.filter-body')?.querySelector('.multiselect--active')));
-imitateKeyInput(focusTarget, "a")
-// setTimeout(() => imitateKeyInput(focusTarget, "a"), 500);
+emulateKeyboard(spec.readableName, focusTarget)
     }
 
-    /*
     const parentFilterGroup = focusTarget.closest(".filter-group-body");
     if (!parentFilterGroup) {
       console.error("Missing parent filter group.");
@@ -199,7 +192,6 @@ imitateKeyInput(focusTarget, "a")
       return;
     }
     nearestMinInput.focus();
-    */
   }
 
   /**
