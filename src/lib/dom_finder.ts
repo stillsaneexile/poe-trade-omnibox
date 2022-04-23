@@ -39,6 +39,8 @@ const Selectors: Readonly<Record<string, string>> = {
   STAT_FILTER_DROPDOWN_ELEMENTS: ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)",
   // The presence of such a class would indicate that some stat filter is open.
   STAT_FILTER_ACTIVE: ".multiselect--active",
+  // Can be used to count the number of filters added.
+  GENERIC_FILTER_LINE: ".filter",
 };
 
 const STAT_MODS_API_ENDPOINT =
@@ -194,11 +196,11 @@ export class ItemTradePage {
     // this, like WebDriver, we need to fake-wait until an element appears (a
     // new filter will be added).
     const preClickFiltersLength =
-      parentFilterGroup.querySelectorAll(".filter")!.length;
+      parentFilterGroup.querySelectorAll(Selectors.GENERIC_FILTER_LINE)!.length;
 
     await waitUntil(
       () =>
-        parentFilterGroup.querySelectorAll(".filter").length ===
+        parentFilterGroup.querySelectorAll(Selectors.GENERIC_FILTER_LINE).length ===
         preClickFiltersLength + 1
     );
 
@@ -209,7 +211,8 @@ export class ItemTradePage {
     //
     // It's really really important that you querySelectorAll again here: do not
     // use a stale variable.
-    const filtersPostClick = parentFilterGroup.querySelectorAll(".filter");
+    const filtersPostClick =
+      parentFilterGroup.querySelectorAll(Selectors.GENERIC_FILTER_LINE);
     const secondToLastFilter = filtersPostClick.item(
       Math.max(filtersPostClick.length - 2, 0)
     );
