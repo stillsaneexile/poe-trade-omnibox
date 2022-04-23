@@ -2,7 +2,7 @@ import React from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { ItemTradePage } from "../lib/dom_finder";
 import { FilterSpec } from "../lib/filter_spec";
-import HelpPage from "./HelpPage";
+import HelpPage from "./help/HelpPage";
 import HOTKEY_CONFIG from "./HotkeyConfig";
 import Omnibox from "./omnibox/Omnibox";
 

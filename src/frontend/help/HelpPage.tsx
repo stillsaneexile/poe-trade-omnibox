@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import PopupDiv from "../common/PopupDiv";
 
 const HELP_SPEC = [{
   key: "/",
@@ -26,7 +27,7 @@ const HelpContainer = styled.div`
 `;
 
 const HelpPage = () => {
-  return <HelpContainer>
+  return <PopupDiv><HelpContainer>
     <table>
       <tbody>
       {HELP_SPEC.map((item) => (<tr>
@@ -35,7 +36,9 @@ const HelpPage = () => {
       </tr>))}
 </tbody>
     </table>
-  </HelpContainer>;
+  </HelpContainer>
+</PopupDiv>
+  ;
 };
 
 export default HelpPage;

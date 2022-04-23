@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { FilterSpec } from "../../lib/filter_spec";
-import Space from "../Space";
+import Space from "../common/Space";
 
 const ItemDiv = styled.div<{ isSelected: boolean }>`
   // Again: color taken from computed color of trade site for similar highlights.
