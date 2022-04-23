@@ -84,7 +84,7 @@ test("respects patterns that skip on the text", () => {
   expect(getNames(searcher.search("f b b"))).toEqual(
     expect.arrayContaining(["foo baz bar"])
   );
-  expect(getNames(searcher.search("f b z"))).toEqual(
+  expect(getNames(searcher.search("f baz"))).toEqual(
     expect.arrayContaining(["foo bar baz"])
   );
 });
