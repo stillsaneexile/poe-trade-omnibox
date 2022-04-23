@@ -43,7 +43,8 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   const itemRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     if (isSelected && itemRef.current) {
-      itemRef.current.scrollIntoView(false);
+      // This is supported on Chrome.
+      (itemRef.current as any).scrollIntoViewIfNeeded(false);
     }
   }, [isSelected]);
 
