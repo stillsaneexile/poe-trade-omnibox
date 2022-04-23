@@ -8,6 +8,12 @@ import { FilterSpec } from "./filter_spec";
 import waitUntil from "./wait_until";
 
 /**
+ * This is due to a quirk for our matching algorithm where explicit mods don't
+ * have the word "explicit" to the left of their stat filters.
+ */
+
+const EXPLICIT_STAT_SUBCATEGORY = "explicit";
+/**
  * DOM selectors used for scraping / finding parts of the page.
  *
  * Rather than hard-coding selectors, this helps to makes the process agnostic.
@@ -147,7 +153,8 @@ emulateKeyboard(spec.readableName, focusTarget)
     for (const optionNode of selectOptions) {
       const normalized = optionNode.textContent!.trim().toLowerCase();
       let matchesSubcategory = true;
-      if (spec.statSubcategory) {
+      if (spec.statSubcategory && spec.statSubcategory !==
+        EXPLICIT_STAT_SUBCATEGORY) {
         matchesSubcategory = normalized.startsWith(spec.statSubcategory);
       }
 
