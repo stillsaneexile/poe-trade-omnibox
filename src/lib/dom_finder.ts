@@ -157,7 +157,7 @@ export class ItemTradePage {
         ...(filterParent?.querySelectorAll<HTMLButtonElement>(
           ".multiselect--active .multiselect__content-wrapper .multiselect__element .multiselect__option:not(.multiselect__option--disabled)"
         ) || [])];
-      console.log(selectOptions);
+      console.log(selectOptions.map(c => c.textContent));
       return selectOptions.every(e =>
         e.textContent!.includes(spec.readableName));
     }
@@ -176,22 +176,21 @@ export class ItemTradePage {
     let selectedOption = null;
     for (const optionNode of selectOptions) {
       const normalized = optionNode.textContent!.trim().toLowerCase();
-      let matchesSubcategory = true;
-      if (
+      const isExplicitSubcategory = spec.statSubcategory ===
+        EXPLICIT_STAT_SUBCATEGORY;
+      // Explicit needs to be exact match because the UI doesn't show "Explicit"
+      // to the left when constructing `normalized`.
+      const isExplicitAndExactMatch = isExplicitSubcategory && spec.readableName.toLowerCase() ;
+      const isSameSubcategoryAndPartialMatch = !isExplicitSubcategory &&
         spec.statSubcategory &&
-        spec.statSubcategory !== EXPLICIT_STAT_SUBCATEGORY
-      ) {
-        matchesSubcategory = normalized.startsWith(spec.statSubcategory);
-      }
+        normalized.startsWith(spec.statSubcategory) &&
+        normalized.includes(spec.readableName.toLowerCase());
 
-      console.log(normalized, spec.readableName.toLowerCase());
-      if (
-        matchesSubcategory &&
-        normalized.includes(spec.readableName.toLowerCase())
-      ) {
+      if (isExplicitAndExactMatch || isSameSubcategoryAndPartialMatch) {
         selectedOption = optionNode;
       }
     }
+
     if (!selectedOption) {
       // Really shouldn't happen unless there's a bug in the matching above.
       console.error("There was an error finding the option.");
