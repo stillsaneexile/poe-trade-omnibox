@@ -4,3 +4,4 @@ dist/
 tmp/
 *.swp
 build/
+.DS_Store

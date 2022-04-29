@@ -1,8 +1,8 @@
 {
-  "name": "chrome-extension-typescript-starter",
+  "name": "poe-trade-hotkey-omnisearch",
   "version": "1.0.0",
   "private": true,
-  "description": "chrome-extension-typescript-starter",
+  "description": "A Chrome extension for the Path of Exile trade site.",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chibat/chrome-extension-typescript-starter.git"
+    "url": "https://github.com/stillsaneexile/poe-trade-omnibox"
   },
   "dependencies": {
     "@emotion/react": "^11.9.0",

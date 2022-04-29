@@ -1,8 +1,8 @@
 # Path of Exile Trade Hotkey Omnisearch
 A Chrome extension adding hotkeys and a single "omni" searchbox to the Path
 of Exile [trade
-site](https://www.pathofexile.com/trade/search/). Search for trades without
-using only your keyboard.
+site](https://www.pathofexile.com/trade/search/). Search for trades 
+**using only your keyboard to navigate.**
 
 ## Features
 Press `;` to bring up the omnisearch box. It supports **any filter in any
@@ -22,7 +22,7 @@ For example:
 Press `?` after installing to learn more.
 
 ## Installation
-Install in the [Chrome Web Store](TODO).
+Install in the [Chrome Web Store](https://chrome.google.com/webstore/detail/path-of-exile-trade-hotke/emekiohhckejeabmakkjjdglllaolmad?hl=en&authuser=0).
 
 ## Contributing
 
