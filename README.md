@@ -5,7 +5,7 @@ site](https://www.pathofexile.com/trade/search/). Search for trades
 **using only your keyboard to navigate.**
 
 ## Features
-Press `;` to bring up the omnisearch box. It supports **any filter in any
+Press `;` to bring up the omnisearch box. Start typing to find **any filter in any
 language**, including the filters on the left hand side of the trade UI
 (corrupted, split, DPS, item category, etc.).
 
