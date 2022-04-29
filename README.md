@@ -1,19 +1,25 @@
-# Path of Exile Trade Hotkey Omnibox
-A Chrome extension adding hotkeys and smoother search functionality to the Path
+# Path of Exile Trade Hotkey Omnisearch
+A Chrome extension adding hotkeys and a single "omni" searchbox to the Path
 of Exile [trade
-site](https://www.pathofexile.com/trade/search/).
+site](https://www.pathofexile.com/trade/search/). Search for trades without
+using only your keyboard.
 
 ## Features
-This extension boils down to two keys:
-* `/`: Focuses the main search box
-* `;`: Opens the "omnibox", where you can do fuzzy search to add any filter,
-    including those on the left side of the trade UI (corrupted, split, DPS,
-    item category, etc.)
+Press `;` to bring up the omnisearch box. It supports **any filter in any
+language**, including the filters on the left hand side of the trade UI
+(corrupted, split, DPS, item category, etc.).
+
+![Demo of sockets search](assets/sockets-demo.png)
+
+It also adds a variety of hotkeys to navigate the UI, so that you never have to
+resort to using the mouse.
 
 For example: 
 * `;` + `frac strength` brings up fractured strength, fractured strength and dex, etc.
+* `;` + `links` jumps to the socket links filter, after which you can press
+    `tab` to navigate.
 
-Works in any language. Press `?` after installing to learn more.
+Press `?` after installing to learn more.
 
 ## Installation
 Install in the [Chrome Web Store](TODO).
