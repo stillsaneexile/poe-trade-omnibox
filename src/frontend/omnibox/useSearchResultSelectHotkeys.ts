@@ -1,6 +1,9 @@
 /**
  * React hook that enables hotkeys like ctrl + 1, ctrl + 2, ...
  * to select a result from the list.
+ *
+ * TODO: Not completed. At the moment, it doesn't work for ctrl + 1.
+ * This also needs to be changed depending on Windows, etc.
  */
 
 import {useHotkeys} from "react-hotkeys-hook";
@@ -16,11 +19,9 @@ const useSearchResultSelectHotkeys = (searchResults: FilterSpec[],
       hotkeyNumbers.push( i + 1);
     }
     const hotkeyString = hotkeyNumbers.map(n => `ctrl+${n}`).join(",");
-    console.log(hotkeyString);
     useHotkeys(hotkeyString, (e: KeyboardEvent) => {
       e.preventDefault();
       const pressedNumber = parseInt(e.key, 10);
-      console.log(pressedNumber);
       // Out of bounds. Skip.
       if (pressedNumber > searchResults.length) {
         return;

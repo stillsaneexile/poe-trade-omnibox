@@ -8,7 +8,6 @@ import HOTKEY_CONFIG from "../HotkeyConfig";
 import Space from "../common/Space";
 import SearchResultItem from "./SearchResultItem";
 import PopupDiv from "../common/PopupDiv";
-import useSearchResultSelectHotkeys from "./useSearchResultSelectHotkeys";
 
 const InputContainerDiv = styled.div`
   // Too lazy to figure this shit out so just use a flexbox so the input sizes
@@ -102,8 +101,6 @@ const Omnibox: React.FC<OmniboxProps> = ({
     searchResults,
     selectedIndex,
   ]);
-
-  useSearchResultSelectHotkeys(searchResults, handleResultSelect);
 
   const searcher = React.useMemo(() => {
     return new FuzzyFilterSpecSearcher(filterSpecs);
