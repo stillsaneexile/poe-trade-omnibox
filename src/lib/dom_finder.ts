@@ -255,8 +255,11 @@ export class ItemTradePage {
         spec.statSubcategory &&
         normalized ===
           `${spec.statSubcategory} ${spec.readableName.toLowerCase()}`;
+      // Take the first match. There's some buggy cases on GGG's side, like two
+      // spell suppress items.
       if (foundMatch) {
         selectedOption = optionNode;
+        break;
       }
     }
 
