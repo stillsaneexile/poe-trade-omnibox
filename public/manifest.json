@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Path of Exile Trade Omnisearch",
   "description": "Faster trade search. Adds an omnisearch box with hotkeys to the Path of Exile trade site. Press ? after installing.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "action": {
     "default_icon": "icon.png"
   },
